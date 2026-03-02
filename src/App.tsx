@@ -1,5 +1,5 @@
 import { useState, useEffect, type FC } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useSpring } from 'motion/react';
 import { ArrowUpRight, Menu, X, ChevronDown, Twitter, Linkedin, Dribbble, Mail, Phone } from 'lucide-react';
 
 // --- Types & Data ---
@@ -17,7 +17,9 @@ type Project = {
   id: string;
   title: string;
   category: string;
-  image: string;
+  image: string; // Keep for gradient fallback
+  thumbnail?: string; // New property for image URL
+  footerImage?: string; // Image to display at the bottom of the project details
   size: string;
   readTime: string;
   year: string;
@@ -28,68 +30,17 @@ type Project = {
 
 const projects: Project[] = [
   {
-    id: "enquiry-module",
-    title: "Redesigning the Enquiry Module",
-    category: "Web Application",
-    image: "from-slate-900 to-zinc-900",
-    size: "md:col-span-2 md:row-span-2 h-[500px]",
-    readTime: "8 min",
-    year: "2025",
-    role: "UX Designer",
-    client: "Freightify Platform",
-    sections: [
-      {
-        title: "The Enquiry That Led Nowhere",
-        content: "The analytics dashboard showed something strange. The Enquiry module -- built to track rate searches and help users negotiate better pricing -- had decent usage numbers. People were logging searches. They were submitting requests for better rates. The data suggested the feature was working.\n\nBut then we looked at what happened after the request.\n\nNothing.\n\nThe flow just... stopped. A user would search for a rate, realize it wasn't competitive, request a better one from the help desk, get a response -- and then the trail went cold. If they actually wanted to do something with that newly negotiated rate -- create a quote, make a booking -- they had to start over. New search. New entry. As if the previous conversation never happened.\n\nIt wasn't a bug. It was how the module was designed.",
-        image: "https://drive.google.com/uc?export=view&id=1KK6VKIiOd-MmjCloGwsIWDLtPc33DBVI"
-      },
-      {
-        title: "The Module That Forgot Its Purpose",
-        content: "We sat down with users expecting to hear complaints about clunky UI or slow load times. Instead, we heard confusion.\n\nMost users had no idea the Enquiry module was supposed to be part of a larger workflow. They treated it like a help desk form -- a dead-end for problems, not a bridge to action. A few power users knew there should be a way to convert searches into quotes or bookings, but even they had given up trying to figure it out.\n\nThe module wasn't failing because it was broken. It was failing because it had been orphaned from the rest of the platform.",
-        items: [
-          "\"Wait, I thought this was just for logging issues with rate fetching.\"",
-          "\"I use it when something breaks. Like a support ticket.\"",
-          "\"Oh, you can create bookings from here?\""
-        ],
-        highlight: "I just do the search again. It's faster than trying to remember what rate I requested two days ago."
-      },
-      {
-        title: "Rebuilding the Map",
-        content: "The original vision -- tracking a rate card's journey from search to booking -- made sense on paper. But when we started mapping it out, the complexity became obvious.\n\nA single rate search could branch into multiple paths. One enquiry might spawn three different quotes. A quote could sit idle for weeks, then suddenly convert. Another might get abandoned, revisited, modified, and merged with a different booking entirely. Tracking every possible path meant storing massive amounts of relational data across modules that weren't designed to talk to each other.\n\nWe could build it. But it would be slow, fragile, and nearly impossible to maintain.\n\nSo we stepped back and asked a different question: What does this module actually need to do?",
-        highlight: "The answer wasn't \"track everything.\" It was \"don't make users start from scratch.\"",
-        image: "https://www.dropbox.com/scl/fi/tp9brgihfg8a4buvvj49y/Enquiry-new-screen.png?rlkey=bkxf4h7gqdbso6ak8qllq3bm8&st=sppyhc9a&raw=1"
-      },
-      {
-        title: "The Trade-Off",
-        content: "I wanted full traceability. I wanted to see the entire lifecycle of a rate card, from first search to final booking, with every negotiation and revision logged along the way. It felt like the right thing to build -- transparent, accountable, data-rich.\n\nBut the product team and stakeholders pushed back. Not because it was a bad idea, but because it was the wrong scope.\n\nThe real problem wasn't tracking. It was continuity. Users were losing context every time they left the Enquiry module. They couldn't carry their work forward. The platform was making them repeat themselves.\n\nSo we narrowed the focus: record the search, capture the negotiation request, and -- this was the key part -- let users create a quote or booking directly from the enquiry record. No re-entering data. No searching twice. The rate they negotiated? It flows forward.",
-        highlight: "We weren't building a tracking system. We were building a bridge."
-      },
-      {
-        title: "Showing, Not Selling",
-        content: "When we put the prototype in front of users, the reaction wasn't excitement. It was relief.\n\nOne user immediately started mapping out how her team would use it: search, negotiate, convert -- all in one place. Another asked if we could add a filter to see which enquiries hadn't been converted yet. The internal ops team realized they could finally measure search-to-quote conversion rates without duct-taping three different reports together.\n\nIt wasn't flashy. It was functional. And that was the point.",
-        items: [
-          "\"Oh. So I can just... do it from here?\"",
-          "\"This makes so much more sense.\""
-        ],
-        image: "https://picsum.photos/seed/enquiry-after/1200/800"
-      },
-      {
-        title: "What We Learned",
-        content: "The Enquiry module failed not because users didn't understand it, but because we hadn't finished building the thing it was supposed to be part of. Somewhere along the way, the vision got fragmented. Features were shipped in isolation. Knowledge transfer didn't happen. The module became a vestigial appendage -- technically working, practically useless.\n\nRevamping it wasn't about redesigning screens. It was about reconnecting severed workflows and asking what users actually needed to complete their work, not just record it.\n\nWe didn't track every possible path a rate card could take. We made sure it could take one clear path forward. Sometimes the best design decision is knowing what not to build.",
-        highlight: "The module still records searches and negotiation requests. But now it also answers the question every user was silently asking: Okay, now what?"
-      }
-    ]
-  },
-  {
     id: "booking-module",
     title: "Revamping the Booking Module",
     category: "SaaS Logistics Platform",
     image: "from-blue-900 to-slate-900",
-    size: "md:col-span-2 md:row-span-2 h-[500px]",
+    thumbnail: "https://drive.google.com/thumbnail?id=1RlrgP4tJl2Cjsapbxt5erX_TwP3sMbtJ&sz=w1600",
+    size: "md:col-span-3 md:row-span-2 h-[500px]",
     readTime: "5 min",
     year: "2025",
-    role: "Lead Product Designer",
+    role: "Senior Product Designer",
     client: "Logistics SaaS",
+    footerImage: "https://drive.google.com/thumbnail?id=1CcW01psEJN2gnZUY-S9u4C4emgCLvZcC&sz=w1600",
     sections: [
       {
         title: "Scene 1 — The Friction",
@@ -136,19 +87,91 @@ const projects: Project[] = [
     ]
   },
   {
-    id: "lumina",
-    title: "Lumina Brand",
-    category: "Branding & Identity",
-    image: "from-orange-900 to-amber-900",
-    size: "md:col-span-1 h-[240px]",
-    readTime: "3 min",
-    year: "2024",
-    role: "Brand Designer",
-    client: "Lumina",
+    id: "enquiry-module",
+    title: "Redesigning the Enquiry Module",
+    category: "Web Application",
+    image: "from-slate-900 to-zinc-900",
+    thumbnail: "https://drive.google.com/thumbnail?id=1xhwgqonWcL_zShg9bGukwMY58qYZ2--l&sz=w1600",
+    size: "md:col-span-2 md:row-span-2 h-[500px]",
+    readTime: "8 min",
+    year: "2025",
+    role: "Senior Product Designer",
+    client: "Freightify Platform",
+    footerImage: "https://drive.google.com/thumbnail?id=1-c2QdhEocqlyKUGa_oAYYpPqeVHRwUR2&sz=w1600",
     sections: [
       {
-        title: "Overview",
-        content: "A complete brand identity overhaul for a lighting technology startup, focusing on warmth and innovation."
+        title: "The Enquiry That Led Nowhere",
+        content: "The analytics dashboard showed something strange. The Enquiry module -- built to track rate searches and help users negotiate better pricing -- had decent usage numbers. People were logging searches. They were submitting requests for better rates. The data suggested the feature was working.\n\nBut then we looked at what happened after the request.\n\nNothing.\n\nThe flow just... stopped. A user would search for a rate, realize it wasn't competitive, request a better one from the help desk, get a response -- and then the trail went cold. If they actually wanted to do something with that newly negotiated rate -- create a quote, make a booking -- they had to start over. New search. New entry. As if the previous conversation never happened.\n\nIt wasn't a bug. It was how the module was designed.",
+        image: "https://drive.google.com/thumbnail?id=1Q2j2neC1vhyqhHijuhRAYiM668WaJNB1&sz=w1600"
+      },
+      {
+        title: "The Module That Forgot Its Purpose",
+        content: "We sat down with users expecting to hear complaints about clunky UI or slow load times. Instead, we heard confusion.\n\nMost users had no idea the Enquiry module was supposed to be part of a larger workflow. They treated it like a help desk form -- a dead-end for problems, not a bridge to action. A few power users knew there should be a way to convert searches into quotes or bookings, but even they had given up trying to figure it out.\n\nThe module wasn't failing because it was broken. It was failing because it had been orphaned from the rest of the platform.",
+        items: [
+          "\"Wait, I thought this was just for logging issues with rate fetching.\"",
+          "\"I use it when something breaks. Like a support ticket.\"",
+          "\"Oh, you can create bookings from here?\""
+        ],
+        highlight: "I just do the search again. It's faster than trying to remember what rate I requested two days ago."
+      },
+      {
+        title: "Rebuilding the Map",
+        content: "The original vision -- tracking a rate card's journey from search to booking -- made sense on paper. But when we started mapping it out, the complexity became obvious.\n\nA single rate search could branch into multiple paths. One enquiry might spawn three different quotes. A quote could sit idle for weeks, then suddenly convert. Another might get abandoned, revisited, modified, and merged with a different booking entirely. Tracking every possible path meant storing massive amounts of relational data across modules that weren't designed to talk to each other.\n\nWe could build it. But it would be slow, fragile, and nearly impossible to maintain.\n\nSo we stepped back and asked a different question: What does this module actually need to do?",
+        highlight: "The answer wasn't \"track everything.\" It was \"don't make users start from scratch.\"",
+        image: "https://drive.google.com/thumbnail?id=1igRMQqPBz8O9lJUF3Qa7x0lqeFYLKz0j&sz=w1600"
+      },
+      {
+        title: "The Trade-Off",
+        content: "I wanted full traceability. I wanted to see the entire lifecycle of a rate card, from first search to final booking, with every negotiation and revision logged along the way. It felt like the right thing to build -- transparent, accountable, data-rich.\n\nBut the product team and stakeholders pushed back. Not because it was a bad idea, but because it was the wrong scope.\n\nThe real problem wasn't tracking. It was continuity. Users were losing context every time they left the Enquiry module. They couldn't carry their work forward. The platform was making them repeat themselves.\n\nSo we narrowed the focus: record the search, capture the negotiation request, and -- this was the key part -- let users create a quote or booking directly from the enquiry record. No re-entering data. No searching twice. The rate they negotiated? It flows forward.",
+        highlight: "We weren't building a tracking system. We were building a bridge."
+      },
+      {
+        title: "Showing, Not Selling",
+        content: "When we put the prototype in front of users, the reaction wasn't excitement. It was relief.\n\nOne user immediately started mapping out how her team would use it: search, negotiate, convert -- all in one place. Another asked if we could add a filter to see which enquiries hadn't been converted yet. The internal ops team realized they could finally measure search-to-quote conversion rates without duct-taping three different reports together.\n\nIt wasn't flashy. It was functional. And that was the point.",
+        items: [
+          "\"Oh. So I can just... do it from here?\"",
+          "\"This makes so much more sense.\""
+        ],
+        image: "https://drive.google.com/thumbnail?id=1cAdrCCNlFMocbjb5H3TYt_Sugd2SwFnu&sz=w1600"
+      },
+      {
+        title: "What We Learned",
+        content: "The Enquiry module failed not because users didn't understand it, but because we hadn't finished building the thing it was supposed to be part of. Somewhere along the way, the vision got fragmented. Features were shipped in isolation. Knowledge transfer didn't happen. The module became a vestigial appendage -- technically working, practically useless.\n\nRevamping it wasn't about redesigning screens. It was about reconnecting severed workflows and asking what users actually needed to complete their work, not just record it.\n\nWe didn't track every possible path a rate card could take. We made sure it could take one clear path forward. Sometimes the best design decision is knowing what not to build.",
+        highlight: "The module still records searches and negotiation requests. But now it also answers the question every user was silently asking: Okay, now what?"
+      }
+    ]
+  },
+  {
+    id: "kaizen",
+    title: "Kaizen HR Branding",
+    category: "Branding & Identity",
+    image: "from-blue-900 to-purple-900",
+    thumbnail: "https://drive.google.com/thumbnail?id=1D7w73syv8t6GiKjZAPJiuJF_fnWZezeX&sz=w1600",
+    size: "md:col-span-1 h-[240px]",
+    readTime: "2 min",
+    year: "2024",
+    role: "Freelance Designer",
+    client: "Kaizen HR",
+    sections: [
+      {
+        title: "Concept Sketches",
+        image: "https://drive.google.com/thumbnail?id=15oDhrKjBx5c3MDkLKESqSe8fPy-Eo7vR&sz=w1600"
+      },
+      {
+        title: "Digital Drafting",
+        image: "https://drive.google.com/thumbnail?id=1ZCBxb7q4mVBOnCV6OySscQnM6gpy8qFj&sz=w1600"
+      },
+      {
+        title: "Logo Construction",
+        image: "https://drive.google.com/thumbnail?id=1qzOVPROtTiO_2wj6tRrP6cqP8iNY1GAM&sz=w1600"
+      },
+      {
+        title: "Final Logo Design",
+        image: "https://drive.google.com/thumbnail?id=14kD5sVgni3Pkv0DDYt-8bIDRDR-N3jpP&sz=w1600"
+      },
+      {
+        title: "Brand Application",
+        image: "https://drive.google.com/thumbnail?id=1jVA8zrEQPrvxEmg0zsI8HoqqpS07_x9_&sz=w1600"
       }
     ]
   },
@@ -157,6 +180,7 @@ const projects: Project[] = [
     title: "HealthTrack App",
     category: "Mobile Design",
     image: "from-emerald-900 to-teal-900",
+    thumbnail: "https://picsum.photos/seed/healthtrack-thumb/800/800",
     size: "md:col-span-1 h-[240px]",
     readTime: "4 min",
     year: "2023",
@@ -176,14 +200,33 @@ const projects: Project[] = [
 const CustomCursor = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
+  
+  // Use springs for smooth movement
+  const cursorX = useSpring(0, { stiffness: 500, damping: 28 });
+  const cursorY = useSpring(0, { stiffness: 500, damping: 28 });
+  
+  // Slightly slower spring for the outline to create a trailing effect
+  const outlineX = useSpring(0, { stiffness: 250, damping: 20 });
+  const outlineY = useSpring(0, { stiffness: 250, damping: 20 });
 
   useEffect(() => {
     const updateMousePosition = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
+      cursorX.set(e.clientX);
+      cursorY.set(e.clientY);
+      outlineX.set(e.clientX);
+      outlineY.set(e.clientY);
     };
 
     const handleMouseOver = (e: MouseEvent) => {
-      if ((e.target as HTMLElement).tagName === 'A' || (e.target as HTMLElement).tagName === 'BUTTON' || (e.target as HTMLElement).closest('a') || (e.target as HTMLElement).closest('button')) {
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === 'A' || 
+        target.tagName === 'BUTTON' || 
+        target.closest('a') || 
+        target.closest('button') ||
+        target.classList.contains('hover-target')
+      ) {
         setIsHovering(true);
       } else {
         setIsHovering(false);
@@ -197,21 +240,39 @@ const CustomCursor = () => {
       window.removeEventListener('mousemove', updateMousePosition);
       window.removeEventListener('mouseover', handleMouseOver);
     };
-  }, []);
+  }, [cursorX, cursorY, outlineX, outlineY]);
 
   return (
     <>
-      <div
-        className="cursor-dot fixed pointer-events-none z-[100] hidden md:block"
-        style={{ left: mousePosition.x, top: mousePosition.y }}
+      <motion.div
+        className="cursor-dot fixed pointer-events-none z-[100] hidden md:block rounded-full bg-[var(--color-accent)]"
+        style={{ 
+          x: cursorX, 
+          y: cursorY,
+          translateX: "-50%",
+          translateY: "-50%",
+          width: 8,
+          height: 8
+        }}
       />
-      <div
-        className={`cursor-outline fixed pointer-events-none z-[100] hidden md:block transition-all duration-150 ease-out ${
-          isHovering ? 'scale-150 bg-white/10 border-transparent' : ''
-        }`}
+      <motion.div
+        className="cursor-outline fixed pointer-events-none z-[100] hidden md:block rounded-full border border-white/50 transition-colors duration-200"
         style={{
-          left: mousePosition.x,
-          top: mousePosition.y,
+          x: outlineX,
+          y: outlineY,
+          translateX: "-50%",
+          translateY: "-50%"
+        }}
+        animate={{
+          width: isHovering ? 60 : 40,
+          height: isHovering ? 60 : 40,
+          backgroundColor: isHovering ? "rgba(255, 255, 255, 0.1)" : "transparent",
+          borderColor: isHovering ? "transparent" : "rgba(255, 255, 255, 0.5)"
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 20
         }}
       />
     </>
@@ -243,7 +304,7 @@ const Navbar = () => {
         isScrolled ? 'py-4 bg-black/50 backdrop-blur-md border-b border-white/5' : 'py-8 bg-transparent'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+      <div className="max-w-[1600px] mx-auto px-6 md:px-20 flex justify-between items-center">
         <a href="#" className="text-2xl font-display font-bold tracking-tighter text-white z-50">
           VARUN<span className="text-[var(--color-accent)]">.</span>
         </a>
@@ -302,39 +363,118 @@ const Navbar = () => {
   );
 };
 
+const CosmicAnimation = () => {
+  // Generate random stars
+  const stars = Array.from({ length: 30 }).map((_, i) => ({
+    id: i,
+    size: Math.random() * 2 + 1,
+    left: Math.random() * 100,
+    top: Math.random() * 100,
+    duration: Math.random() * 15 + 10,
+    delay: Math.random() * 5,
+  }));
+
+  // Generate shooting stars
+  const shootingStars = Array.from({ length: 5 }).map((_, i) => ({
+    id: i,
+    left: Math.random() * 80, // Keep mostly to the left side to move right
+    top: Math.random() * 80 + 20, // Keep mostly to the bottom to move up
+    duration: Math.random() * 3 + 2,
+    delay: Math.random() * 10,
+  }));
+
+  return (
+    <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+      {/* Drifting Stars */}
+      {stars.map((star) => (
+        <motion.div
+          key={`star-${star.id}`}
+          className="absolute rounded-full bg-white"
+          style={{
+            width: star.size,
+            height: star.size,
+            left: `${star.left}%`,
+            top: `${star.top}%`,
+          }}
+          animate={{
+            x: ["-20px", "100px"], // Drift right
+            y: ["20px", "-100px"], // Drift up
+            opacity: [0.2, 0.8, 0.2],
+          }}
+          transition={{
+            duration: star.duration,
+            repeat: Infinity,
+            ease: "linear",
+            delay: star.delay,
+            repeatType: "reverse",
+          }}
+        />
+      ))}
+
+      {/* Shooting Stars (Fast, directional) */}
+      {shootingStars.map((star) => (
+        <motion.div
+          key={`shooting-${star.id}`}
+          className="absolute h-[1px] bg-gradient-to-r from-transparent via-white to-transparent"
+          style={{
+            width: 100,
+            left: `${star.left}%`,
+            top: `${star.top}%`,
+            transform: "rotate(-45deg)",
+          }}
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{
+            x: [0, 300],
+            y: [0, -300],
+            opacity: [0, 1, 0],
+            scale: [0.5, 1, 0.5],
+          }}
+          transition={{
+            duration: star.duration,
+            repeat: Infinity,
+            delay: star.delay,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
 const Hero = () => {
   return (
     <section id="hero" className="relative h-screen flex items-center justify-center overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 bg-[var(--color-dark)]">
+        <CosmicAnimation />
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--color-glow)]/20 rounded-full blur-[120px] animate-pulse" />
         <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-[var(--color-accent)]/10 rounded-full blur-[100px]" />
       </div>
 
-      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
+      <div className="relative z-10 text-center px-6 md:px-20 max-w-[1600px] mx-auto">
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="text-[var(--color-accent)] font-mono text-sm tracking-[0.2em] uppercase mb-4"
+          className="text-[var(--color-accent)] font-mono text-base md:text-lg tracking-[0.2em] uppercase mb-6"
         >
-          Product Designer
+          Hey, I'm Varun.
         </motion.p>
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
-          className="text-7xl md:text-9xl font-display font-bold tracking-tighter mb-6 leading-none"
+          className="text-4xl md:text-6xl lg:text-7xl font-display font-bold tracking-tight mb-8 leading-[1.1]"
         >
-          VARUN
+          Product Designer.
         </motion.h1>
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
-          className="text-white/60 text-lg md:text-xl max-w-2xl mx-auto mb-12 font-light"
+          className="text-white/70 text-lg md:text-2xl max-w-3xl mx-auto mb-12 font-light leading-relaxed"
         >
-          Crafting intuitive digital experiences with a focus on SaaS, mobile, and brand systems.
+          I design interfaces for SaaS platforms, mobile apps, and brands — focused on clarity and ease of use
         </motion.p>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -384,13 +524,13 @@ const ProjectDetailsModal = ({ project, onClose }: { project: Project; onClose: 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-20"
     >
       <div className="absolute inset-0 bg-black/90 backdrop-blur-xl" onClick={onClose} />
       
       <motion.div
         layoutId={`project-${project.id}`}
-        className="relative w-full max-w-5xl h-full md:h-[90vh] bg-[#0a0a0a] rounded-3xl overflow-hidden border border-white/10 flex flex-col shadow-2xl"
+        className="relative w-full max-w-[1600px] h-full md:h-[90vh] bg-[#0a0a0a] rounded-3xl overflow-hidden border border-white/10 flex flex-col shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
@@ -402,9 +542,19 @@ const ProjectDetailsModal = ({ project, onClose }: { project: Project; onClose: 
         </button>
 
         {/* Hero Image */}
-        <div className={`w-full h-1/3 bg-gradient-to-br ${project.image} relative shrink-0`}>
+        <div className={`w-full h-[25vh] relative shrink-0 overflow-hidden`}>
+           {project.thumbnail ? (
+             <img 
+               src={project.thumbnail} 
+               alt={project.title} 
+               className="absolute inset-0 w-full h-full object-cover"
+               referrerPolicy="no-referrer"
+             />
+           ) : (
+             <div className={`absolute inset-0 bg-gradient-to-br ${project.image}`} />
+           )}
            <div className="absolute inset-0 bg-black/20" />
-           <div className="absolute bottom-0 left-0 w-full p-6 md:p-10 bg-gradient-to-t from-[#0a0a0a] to-transparent flex flex-col justify-end">
+           <div className="absolute bottom-0 left-0 w-full p-6 md:p-10 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/60 to-transparent flex flex-col justify-end">
               <span className="text-[var(--color-accent)] font-mono text-xs md:text-sm uppercase tracking-widest mb-2 block">{project.category}</span>
               <h2 className="text-3xl md:text-5xl font-display font-bold leading-none mb-4">{project.title}</h2>
               
@@ -417,8 +567,8 @@ const ProjectDetailsModal = ({ project, onClose }: { project: Project; onClose: 
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-8 md:p-12 custom-scrollbar">
-          <div className="max-w-3xl mx-auto space-y-16">
+        <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
+          <div className="p-6 md:p-10 max-w-full mx-auto space-y-12 flex-1">
              {project.sections.map((section, index) => (
                <div key={index} className="space-y-6">
                  <div className="flex items-baseline gap-4 border-b border-white/10 pb-4 mb-6">
@@ -431,7 +581,7 @@ const ProjectDetailsModal = ({ project, onClose }: { project: Project; onClose: 
                  )}
                  
                  {section.content && (
-                   <p className="text-lg text-white/70 leading-relaxed font-light max-w-2xl">
+                   <p className="text-lg text-white/70 leading-relaxed font-light w-full text-justify">
                      {section.content}
                    </p>
                  )}
@@ -468,11 +618,18 @@ const ProjectDetailsModal = ({ project, onClose }: { project: Project; onClose: 
                  )}
                </div>
              ))}
-             
-             <div className="h-64 w-full bg-white/5 rounded-2xl border border-white/5 flex items-center justify-center mt-12">
-               <span className="text-white/20 font-mono text-sm uppercase tracking-widest">Project Screenshots / Mockups Placeholder</span>
-             </div>
           </div>
+          
+          {project.footerImage && (
+            <div className="w-full mt-12">
+              <img 
+                src={project.footerImage} 
+                alt="Project Footer" 
+                className="w-full h-auto object-cover block"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+          )}
         </div>
       </motion.div>
     </motion.div>
@@ -488,7 +645,16 @@ const ProjectCard: FC<{ project: Project; onClick: () => void }> = ({ project, o
       className={`group relative rounded-2xl overflow-hidden border border-white/10 bg-white/5 ${project.size} cursor-pointer`}
     >
       {/* Image Placeholder */}
-      <div className={`w-full h-full absolute inset-0 bg-gradient-to-br ${project.image} opacity-60 group-hover:opacity-80 transition-opacity duration-500`} />
+      {project.thumbnail ? (
+        <img 
+          src={project.thumbnail} 
+          alt={project.title} 
+          className="w-full h-full absolute inset-0 object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-500"
+          referrerPolicy="no-referrer"
+        />
+      ) : (
+        <div className={`w-full h-full absolute inset-0 bg-gradient-to-br ${project.image} opacity-60 group-hover:opacity-80 transition-opacity duration-500`} />
+      )}
       
       {/* Content Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent p-8 flex flex-col justify-end">
@@ -517,7 +683,7 @@ const Works = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   return (
-    <section id="works" className="py-32 px-6 max-w-7xl mx-auto">
+    <section id="works" className="py-32 px-6 md:px-20 max-w-[1600px] mx-auto">
       <AnimatePresence>
         {selectedProject && (
           <ProjectDetailsModal project={selectedProject} onClose={() => setSelectedProject(null)} />
@@ -566,7 +732,7 @@ const About = () => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.8 }}
-      className="py-32 px-6 max-w-7xl mx-auto bg-white/5 rounded-3xl border border-white/5 relative overflow-hidden"
+      className="py-32 px-6 md:px-20 max-w-[1600px] mx-auto bg-white/5 rounded-3xl border border-white/5 relative overflow-hidden"
     >
       {/* Decorative Glow */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[var(--color-accent)]/5 rounded-full blur-[120px] pointer-events-none" />
@@ -575,7 +741,7 @@ const About = () => {
         <div className="relative">
           <div className="aspect-[4/5] rounded-2xl overflow-hidden relative z-10 border border-white/10 group">
              <img 
-               src="https://picsum.photos/seed/varun/800/1000" 
+               src="https://drive.google.com/thumbnail?id=1RGc0FTSNW6iEOFhA9AFnkj52qyiZl0Ol&sz=w1600" 
                alt="Varun Portrait" 
                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
                referrerPolicy="no-referrer"
@@ -593,28 +759,28 @@ const About = () => {
           </h2>
           <div className="space-y-6 text-white/70 text-lg font-light leading-relaxed">
             <p>
-              I'm Varun, a Product Designer with over 4 years of experience crafting digital products that merge aesthetics with functionality.
+              I used to navigate ships for a living. The merchant navy took me across oceans, and I genuinely loved it — but design kept pulling at me. The interest in art had always been there, and at some point the pull became too strong to ignore. So I made the switch.
             </p>
             <p>
-              My journey started in graphic design, but I quickly fell in love with the interactive nature of product design. I specialize in building scalable design systems, intuitive mobile interfaces, and SaaS platforms that solve complex user problems.
+              That was three years ago. Since then I've been designing for SaaS platforms, mobile apps, and brands, and I've found that the shift wasn't as strange as it sounds. Both worlds ask you to pay close attention, think clearly, and get things right.
             </p>
             <p>
-              When I'm not designing, you can find me exploring brutalist architecture, curating playlists, or experimenting with 3D art.
+              Travelling is still a big part of my life, and so is art — they both feed into how I see and approach design. I'm here to keep growing, and I'm always up for work that challenges me.
             </p>
           </div>
 
           <div className="mt-12 grid grid-cols-2 gap-8">
             <div>
               <h4 className="text-white font-bold mb-2">Experience</h4>
-              <p className="text-white/50">4+ Years</p>
+              <p className="text-white/50">3+ Years</p>
             </div>
             <div>
               <h4 className="text-white font-bold mb-2">Projects</h4>
-              <p className="text-white/50">30+ Delivered</p>
+              <p className="text-white/50">15+ Delivered</p>
             </div>
             <div>
               <h4 className="text-white font-bold mb-2">Focus</h4>
-              <p className="text-white/50">SaaS, Mobile, Brand</p>
+              <p className="text-white/50">SaaS,Branding, Website </p>
             </div>
             <div>
               <h4 className="text-white font-bold mb-2">Location</h4>
@@ -715,8 +881,8 @@ const FAQ = () => {
 
 const Footer = () => {
   return (
-    <footer id="contact" className="pt-32 pb-12 px-6 bg-black border-t border-white/10">
-      <div className="max-w-7xl mx-auto">
+    <footer id="contact" className="pt-32 pb-12 px-6 md:px-20 bg-black border-t border-white/10">
+      <div className="max-w-[1600px] mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 mb-24">
           <div>
             <h2 className="text-6xl md:text-8xl font-display font-bold mb-8 leading-none">
@@ -784,11 +950,11 @@ export default function App() {
       
       <main>
         <Hero />
-        <div className="h-px bg-white/5 w-full max-w-7xl mx-auto" />
+        <div className="h-px bg-white/5 w-full max-w-[1600px] mx-auto" />
         <Works />
-        <div className="h-px bg-white/5 w-full max-w-7xl mx-auto" />
+        <div className="h-px bg-white/5 w-full max-w-[1600px] mx-auto" />
         <About />
-        <div className="h-px bg-white/5 w-full max-w-7xl mx-auto" />
+        <div className="h-px bg-white/5 w-full max-w-[1600px] mx-auto" />
         <FAQ />
       </main>
 
