@@ -1,6 +1,6 @@
 import { useState, useEffect, type FC } from 'react';
 import { motion, AnimatePresence, useSpring } from 'motion/react';
-import { ArrowUpRight, Menu, X, ChevronDown, Twitter, Linkedin, Dribbble, Mail, Phone } from 'lucide-react';
+import { ArrowUpRight, Menu, X, ChevronDown, Twitter, Linkedin, Dribbble, Mail, Phone, Search, BarChart2, FileText, Package, Ship, PenTool, Layout, Cpu, Zap, Users, Briefcase, Layers, MessageSquare, Sparkles } from 'lucide-react';
 
 // --- Types & Data ---
 
@@ -9,6 +9,7 @@ type ProjectSection = {
   subtitle?: string;
   content?: string;
   items?: string[];
+  timelineItems?: { step: string; title: string; description: string; icon: any }[];
   highlight?: string;
   image?: string;
 };
@@ -39,17 +40,17 @@ const projects: Project[] = [
     readTime: "5 min",
     year: "2025",
     role: "Senior Product Designer",
-    client: "Logistics SaaS",
+    client: "Freightify",
     footerImage: "https://drive.google.com/thumbnail?id=1CcW01psEJN2gnZUY-S9u4C4emgCLvZcC&sz=w1600",
     sections: [
       {
         title: "Scene 1 — The Friction",
         content: "Creating a booking should feel like confirming a decision. Instead, it felt like filing paperwork. Booking wasn’t hard. It was unnecessarily complicated.",
         items: [
-          "❌ Two different flows (Quote vs Manual)",
-          "❌ UI only power users understood",
-          "❌ New users dropped off before completing",
-          "❌ No seamless integration to partner TMS"
+          " Two different flows (Quote vs Manual)",
+          " UI only power users understood",
+          " New users dropped off before completing",
+          "No seamless integration to partner TMS"
         ]
       },
       {
@@ -63,10 +64,10 @@ const projects: Project[] = [
         content: "I redesigned the entire experience around one idea: From complex workflow → To guided momentum.",
         image: "https://storage.googleapis.com/uxpilot-auth.appspot.com/b1f1414c62-2317079203649252-0/booking-flow.jpg",
         items: [
-          "✅ 2-Step booking flow (down from multi-tab chaos)",
-          "✅ Same UI whether from Quote or Manual",
-          "✅ One-click sync to partner TMS",
-          "✅ Reduced cognitive load dramatically"
+          "2-Step booking flow (down from multi-tab chaos)",
+          "Same UI whether from Quote or Manual",
+          "One-click sync to partner TMS",
+          "Reduced cognitive load dramatically"
         ]
       },
       {
@@ -176,20 +177,81 @@ const projects: Project[] = [
     ]
   },
   {
-    id: "healthtrack",
-    title: "HealthTrack App",
+    id: "shipper-mobile-app",
+    title: "Shipper Mobile App",
     category: "Mobile Design",
     image: "from-emerald-900 to-teal-900",
-    thumbnail: "https://picsum.photos/seed/healthtrack-thumb/800/800",
+    thumbnail: "https://drive.google.com/thumbnail?id=12VnulZRhjebMSjfGuV2eRwyKbHggDIbq&sz=w1600",
     size: "md:col-span-1 h-[240px]",
-    readTime: "4 min",
-    year: "2023",
-    role: "UI/UX Designer",
-    client: "HealthTrack",
+    readTime: "5 min",
+    year: "2024",
+    role: "Product Designer",
+    client: "Freightify",
+    footerImage: "https://drive.google.com/thumbnail?id=1jUvXFHPE0yQKwI5pzcpOO_pl2j5Sp_nG&sz=w1600",
     sections: [
       {
-        title: "Overview",
-        content: "Designing a habit-forming health tracking application that simplifies daily logging through intuitive gestures."
+        title: "Project Overview",
+        subtitle: "Empowering Shippers On The Go",
+        content: "In the freight forwarding industry, shippers often need to quickly search for competitive shipping rates, review detailed charges, and submit booking requests while away from their desks. This mobile application was designed to bring the full power of rate search and booking management into a pocket-sized, intuitive interface."
+      },
+
+      {
+        title: "The Problem",
+        subtitle: "Complex Desktop Workflows Don't Translate to Mobile",
+        content: "Existing rate search and booking systems were designed for desktop, requiring shippers to navigate complex multi-step processes with large data tables. Key pain points included:",
+        items: [
+          "Shippers couldn't check or compare rates while on-site at ports or warehouses",
+          "Complex charge breakdowns were impossible to read on small screens",
+          "Booking requests required desktop access, causing delays",
+          "No visibility into booking status from mobile devices"
+        ]
+      },
+      {
+        title: "Design Goals",
+        subtitle: "Mobile-First, Data-Rich, Action-Oriented",
+        content: "The design needed to balance information density with mobile usability, ensuring shippers could make informed decisions quickly.",
+        items: [
+          "Enable full rate search with origin/destination, carrier selection, and equipment types",
+          "Present complex pricing data in scannable, mobile-optimized layouts",
+          "Provide one-tap booking request with clear confirmation flow",
+          "Create a unified booking management view with status tracking"
+        ]
+      },
+      {
+        title: "User Flow",
+        subtitle: "From Search to Booking in 5 Steps",
+        timelineItems: [
+          { 
+            step: "01", 
+            title: "Configure Search", 
+            description: "Shipper sets origin, destination, service type (FCL/LCL/AIR), carrier preferences, and equipment requirements.",
+            icon: Search
+          },
+          { 
+            step: "02", 
+            title: "Browse Results", 
+            description: "View 24+ rate results from multiple carriers with live rates, transit times, and pricing comparison across equipment types.",
+            icon: BarChart2
+          },
+          { 
+            step: "03", 
+            title: "Review Charges", 
+            description: "Drill into detailed charge breakdowns—freight, origin, destination—with per-unit and total calculations.",
+            icon: FileText
+          },
+          { 
+            step: "04", 
+            title: "Submit Booking", 
+            description: "One-tap booking request with instant confirmation, booking ID generation, and email notification.",
+            icon: Package
+          },
+          { 
+            step: "05", 
+            title: "Track & Manage", 
+            description: "Monitor all bookings with status filters, view summaries, and manage shipment details from a centralized dashboard.",
+            icon: Ship
+          }
+        ]
       }
     ]
   }
@@ -364,28 +426,58 @@ const Navbar = () => {
 };
 
 const CosmicAnimation = () => {
-  // Generate random stars
-  const stars = Array.from({ length: 30 }).map((_, i) => ({
+  // Nebula clouds - soft glowing areas
+  const nebulaClouds = [
+    { id: 1, color: "bg-indigo-900", size: "w-[800px] h-[800px]", left: "-10%", top: "-20%", delay: 0, duration: 25 },
+    { id: 2, color: "bg-purple-900", size: "w-[600px] h-[600px]", left: "70%", top: "40%", delay: 5, duration: 30 },
+    { id: 3, color: "bg-blue-900", size: "w-[700px] h-[700px]", left: "20%", top: "60%", delay: 2, duration: 28 },
+    { id: 4, color: "bg-slate-900", size: "w-[500px] h-[500px]", left: "50%", top: "-10%", delay: 8, duration: 35 },
+  ];
+
+  // Stars - subtle twinkling background
+  const stars = Array.from({ length: 70 }).map((_, i) => ({
     id: i,
     size: Math.random() * 2 + 1,
     left: Math.random() * 100,
     top: Math.random() * 100,
-    duration: Math.random() * 15 + 10,
-    delay: Math.random() * 5,
+    opacity: Math.random() * 0.5 + 0.1,
+    duration: Math.random() * 3 + 2,
   }));
 
-  // Generate shooting stars
-  const shootingStars = Array.from({ length: 5 }).map((_, i) => ({
+  // Shooting stars - occasional and smooth
+  const shootingStars = Array.from({ length: 4 }).map((_, i) => ({
     id: i,
-    left: Math.random() * 80, // Keep mostly to the left side to move right
-    top: Math.random() * 80 + 20, // Keep mostly to the bottom to move up
-    duration: Math.random() * 3 + 2,
-    delay: Math.random() * 10,
+    left: Math.random() * 100,
+    top: Math.random() * 40, // Start from upper half
+    delay: Math.random() * 10 + 2,
   }));
 
   return (
-    <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-      {/* Drifting Stars */}
+    <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden bg-[#020617]">
+      {/* Deep Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#020617] via-[#0f172a] to-[#000000] opacity-90" />
+
+      {/* Nebula Clouds */}
+      {nebulaClouds.map((cloud) => (
+        <motion.div
+          key={cloud.id}
+          className={`absolute rounded-full mix-blend-screen filter blur-[120px] opacity-20 ${cloud.color} ${cloud.size}`}
+          style={{ left: cloud.left, top: cloud.top }}
+          animate={{
+            x: [0, 50, 0, -50, 0],
+            y: [0, 30, 0, -30, 0],
+            scale: [1, 1.1, 1, 0.9, 1],
+            opacity: [0.15, 0.25, 0.15],
+          }}
+          transition={{
+            duration: cloud.duration,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+
+      {/* Twinkling Stars */}
       {stars.map((star) => (
         <motion.div
           key={`star-${star.id}`}
@@ -395,117 +487,203 @@ const CosmicAnimation = () => {
             height: star.size,
             left: `${star.left}%`,
             top: `${star.top}%`,
+            opacity: star.opacity,
           }}
           animate={{
-            x: ["-20px", "100px"], // Drift right
-            y: ["20px", "-100px"], // Drift up
-            opacity: [0.2, 0.8, 0.2],
+            opacity: [star.opacity, star.opacity * 0.3, star.opacity],
+            scale: [1, 1.2, 1],
           }}
           transition={{
             duration: star.duration,
             repeat: Infinity,
-            ease: "linear",
-            delay: star.delay,
-            repeatType: "reverse",
+            ease: "easeInOut",
+            delay: Math.random() * 5,
           }}
         />
       ))}
 
-      {/* Shooting Stars (Fast, directional) */}
+      {/* Shooting Stars */}
       {shootingStars.map((star) => (
         <motion.div
           key={`shooting-${star.id}`}
-          className="absolute h-[1px] bg-gradient-to-r from-transparent via-white to-transparent"
+          className="absolute w-1 h-1 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,1)]"
           style={{
-            width: 100,
             left: `${star.left}%`,
             top: `${star.top}%`,
-            transform: "rotate(-45deg)",
           }}
-          initial={{ opacity: 0, scale: 0.5 }}
+          initial={{ opacity: 0, x: 0, y: 0 }}
           animate={{
-            x: [0, 300],
-            y: [0, -300],
+            x: [0, 400],
+            y: [0, 400],
             opacity: [0, 1, 0],
-            scale: [0.5, 1, 0.5],
           }}
           transition={{
-            duration: star.duration,
+            duration: 1.5,
             repeat: Infinity,
             delay: star.delay,
-            ease: "easeInOut",
+            repeatDelay: Math.random() * 15 + 10, // Long random delay
+            ease: "easeOut",
           }}
         />
       ))}
+      
+      {/* Soft Vignette */}
+      <div className="absolute inset-0 bg-radial-gradient-to-t from-transparent via-transparent to-black/60" />
     </div>
   );
 };
 
 const Hero = () => {
   return (
-    <section id="hero" className="relative h-screen flex items-center justify-center overflow-hidden">
+    <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden py-20">
       {/* Background Elements */}
-      <div className="absolute inset-0 bg-[var(--color-dark)]">
-        <CosmicAnimation />
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--color-glow)]/20 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-[var(--color-accent)]/10 rounded-full blur-[100px]" />
-      </div>
+      <CosmicAnimation />
 
-      <div className="relative z-10 text-center px-6 md:px-20 max-w-[1600px] mx-auto">
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="text-[var(--color-accent)] font-mono text-base md:text-lg tracking-[0.2em] uppercase mb-6"
-        >
-          Hey, I'm Varun.
-        </motion.p>
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
-          className="text-4xl md:text-6xl lg:text-7xl font-display font-bold tracking-tight mb-8 leading-[1.1]"
-        >
-          Product Designer.
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="text-white/70 text-lg md:text-2xl max-w-3xl mx-auto mb-12 font-light leading-relaxed"
-        >
-          I design interfaces for SaaS platforms, mobile apps, and brands — focused on clarity and ease of use
-        </motion.p>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="flex flex-col md:flex-row items-center justify-center gap-6"
-        >
-          <a
-            href="#works"
-            className="px-8 py-4 bg-white text-black rounded-full font-bold hover:bg-[var(--color-accent)] hover:shadow-[0_0_40px_rgba(249,115,22,0.4)] transition-all duration-300"
+      <div className="relative z-10 px-6 md:px-20 max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+        {/* Left Column: Intro */}
+        <div className="flex flex-col items-start text-left">
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
+            className="text-3xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-8 leading-[1.1]"
           >
-            View Works
-          </a>
-          <a
-            href="#contact"
-            className="px-8 py-4 border border-white/20 text-white rounded-full font-medium hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] hover:shadow-[0_0_40px_rgba(249,115,22,0.2)] transition-all duration-300"
+            Hey, I’m Varun — <span className="text-[var(--color-accent)]">a Product Designer.</span>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+            className="text-white/70 text-lg md:text-2xl max-w-xl mb-10 font-light leading-relaxed"
           >
-            Get in Touch
-          </a>
-        </motion.div>
+            Right now, I’m building SaaS products at Freightify, Chennai.
+            <br className="block mt-4" />
+            I design clean, easy-to-use experiences that make complex systems feel effortless.
+          </motion.p>
+          
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+            className="flex flex-col sm:flex-row items-center gap-6"
+          >
+            <a
+              href="#works"
+              className="px-8 py-4 bg-white text-black rounded-full font-bold hover:bg-[var(--color-accent)] hover:shadow-[0_0_40px_rgba(249,115,22,0.4)] transition-all duration-300 w-full sm:w-auto text-center"
+            >
+              View Works
+            </a>
+            <a
+              href="#contact"
+              className="px-8 py-4 border border-white/20 text-white rounded-full font-medium hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] hover:shadow-[0_0_40px_rgba(249,115,22,0.2)] transition-all duration-300 w-full sm:w-auto text-center"
+            >
+              Get in Touch
+            </a>
+          </motion.div>
+        </div>
+
+        {/* Right Column: Metrics & Tools */}
+        <div className="flex flex-col gap-10 lg:pl-10">
+          {/* Metrics Section */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 1.0 }}
+            className="grid grid-cols-3 gap-4 border-b border-white/10 pb-10"
+          >
+            <div className="flex flex-col items-start">
+              <div className="flex items-center gap-3 mb-2 text-[var(--color-accent)]">
+                <Briefcase className="w-6 h-6" />
+                <span className="text-3xl md:text-4xl font-display font-bold">2+</span>
+              </div>
+              <p className="text-white/60 text-xs md:text-sm uppercase tracking-widest font-mono text-left">Years Exp.</p>
+            </div>
+            <div className="flex flex-col items-start">
+              <div className="flex items-center gap-3 mb-2 text-[var(--color-accent)]">
+                <Layers className="w-6 h-6" />
+                <span className="text-3xl md:text-4xl font-display font-bold">12+</span>
+              </div>
+              <p className="text-white/60 text-xs md:text-sm uppercase tracking-widest font-mono text-left">Projects</p>
+            </div>
+            <div className="flex flex-col items-start">
+              <div className="flex items-center gap-3 mb-2 text-[var(--color-accent)]">
+                <Users className="w-6 h-6" />
+                <span className="text-3xl md:text-4xl font-display font-bold">10K+</span>
+              </div>
+              <p className="text-white/60 text-xs md:text-sm uppercase tracking-widest font-mono text-left">Users</p>
+            </div>
+          </motion.div>
+
+          {/* Tools Section */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 1.2 }}
+            className="grid grid-cols-1 sm:grid-cols-2 gap-8"
+          >
+            {/* Design Tools */}
+            <div className="flex flex-col gap-4">
+              <span className="text-white/60 text-sm uppercase tracking-widest font-mono text-left">Design Tools</span>
+              <div className="flex items-center gap-4">
+                <div className="flex flex-col items-center gap-2 group">
+                  <div className="w-12 h-12 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#F24E1E] transition-colors">
+                    <PenTool className="w-6 h-6 text-white group-hover:text-[#F24E1E]" />
+                  </div>
+                  <span className="text-xs text-white/70">Figma</span>
+                </div>
+                <div className="flex flex-col items-center gap-2 group">
+                  <div className="w-12 h-12 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#0061FF] transition-colors">
+                    <Layout className="w-6 h-6 text-white group-hover:text-[#0061FF]" />
+                  </div>
+                  <span className="text-xs text-white/70">Adobe</span>
+                </div>
+              </div>
+            </div>
+
+            {/* AI Tools */}
+            <div className="flex flex-col gap-4">
+              <span className="text-white/60 text-sm uppercase tracking-widest font-mono text-left">AI Tools</span>
+              <div className="flex items-center gap-4 flex-wrap">
+                <div className="flex flex-col items-center gap-2 group">
+                  <div className="w-12 h-12 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#10A37F] transition-colors">
+                    <MessageSquare className="w-6 h-6 text-white group-hover:text-[#10A37F]" />
+                  </div>
+                  <span className="text-xs text-white/70">ChatGPT</span>
+                </div>
+                <div className="flex flex-col items-center gap-2 group">
+                  <div className="w-12 h-12 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#FF0055] transition-colors">
+                    <Zap className="w-6 h-6 text-white group-hover:text-[#FF0055]" />
+                  </div>
+                  <span className="text-xs text-white/70">Midjourney</span>
+                </div>
+                <div className="flex flex-col items-center gap-2 group">
+                  <div className="w-12 h-12 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#D97757] transition-colors">
+                    <Cpu className="w-6 h-6 text-white group-hover:text-[#D97757]" />
+                  </div>
+                  <span className="text-xs text-white/70">Claude</span>
+                </div>
+                <div className="flex flex-col items-center gap-2 group">
+                  <div className="w-12 h-12 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#4285F4] transition-colors">
+                    <Sparkles className="w-6 h-6 text-white group-hover:text-[#4285F4]" />
+                  </div>
+                  <span className="text-xs text-white/70">AI Studio</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </div>
 
       {/* Scroll Indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 1 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        transition={{ delay: 1.4, duration: 1 }}
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
       >
         <span className="text-[10px] uppercase tracking-widest text-white/40">Scroll</span>
-        <div className="w-[1px] h-12 bg-gradient-to-b from-white/0 via-white/40 to-white/0" />
+        <div className="w-[1px] h-8 bg-gradient-to-b from-white/0 via-white/40 to-white/0" />
       </motion.div>
     </section>
   );
@@ -608,6 +786,26 @@ const ProjectDetailsModal = ({ project, onClose }: { project: Project; onClose: 
                    </ul>
                  )}
                  
+                 {section.timelineItems && (
+                   <div className="mt-12 relative border-l-2 border-white/10 ml-6 space-y-16">
+                     {section.timelineItems.map((item, i) => (
+                       <div key={i} className="relative pl-12">
+                         {/* Icon Bubble */}
+                         <div className="absolute -left-[21px] top-0 w-10 h-10 rounded-full bg-[var(--color-accent)] flex items-center justify-center text-black shadow-lg shadow-[var(--color-accent)]/20 z-10">
+                           <item.icon className="w-5 h-5" />
+                         </div>
+                         
+                         {/* Content */}
+                         <div className="space-y-2">
+                           <span className="text-white/40 font-mono text-sm tracking-widest uppercase block mb-1">{item.step}</span>
+                           <h4 className="text-xl font-bold text-white">{item.title}</h4>
+                           <p className="text-white/70 leading-relaxed">{item.description}</p>
+                         </div>
+                       </div>
+                     ))}
+                   </div>
+                 )}
+                 
                  {section.highlight && (
                    <div className="mt-8 p-8 bg-white/5 border border-white/10 rounded-xl relative overflow-hidden">
                      <div className="absolute top-0 left-0 w-1 h-full bg-[var(--color-accent)]" />
@@ -649,15 +847,15 @@ const ProjectCard: FC<{ project: Project; onClick: () => void }> = ({ project, o
         <img 
           src={project.thumbnail} 
           alt={project.title} 
-          className="w-full h-full absolute inset-0 object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-500"
+          className="w-full h-full absolute inset-0 object-cover object-top opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
           referrerPolicy="no-referrer"
         />
       ) : (
-        <div className={`w-full h-full absolute inset-0 bg-gradient-to-br ${project.image} opacity-60 group-hover:opacity-80 transition-opacity duration-500`} />
+        <div className={`w-full h-full absolute inset-0 bg-gradient-to-br ${project.image} opacity-80 group-hover:opacity-100 transition-opacity duration-500`} />
       )}
       
       {/* Content Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent p-8 flex flex-col justify-end">
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent p-8 flex flex-col justify-end">
         <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
           <div className="flex justify-between items-end mb-2">
             <div>
