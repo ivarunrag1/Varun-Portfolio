@@ -1,6 +1,6 @@
 import { useState, useEffect, type FC } from 'react';
 import { motion, AnimatePresence, useSpring } from 'motion/react';
-import { ArrowUpRight, Menu, X, ChevronDown, Twitter, Linkedin, Dribbble, Mail, Phone, Search, BarChart2, FileText, Package, Ship, PenTool, Layout, Cpu, Zap, Users, Briefcase, Layers, MessageSquare, Sparkles } from 'lucide-react';
+import { ArrowUpRight, Menu, X, ChevronDown, Twitter, Linkedin, Dribbble, Mail, Phone, Search, BarChart2, FileText, Package, Ship, PenTool, Layout, Cpu, Zap, Users, Briefcase, Layers, MessageSquare, Sparkles, Trello } from 'lucide-react';
 
 // --- Types & Data ---
 
@@ -36,7 +36,7 @@ const projects: Project[] = [
     category: "SaaS Logistics Platform",
     image: "from-blue-900 to-slate-900",
     thumbnail: "https://drive.google.com/thumbnail?id=1RlrgP4tJl2Cjsapbxt5erX_TwP3sMbtJ&sz=w1600",
-    size: "md:col-span-3 md:row-span-2 h-[500px]",
+    size: "md:col-span-1 h-[500px]",
     readTime: "5 min",
     year: "2025",
     role: "Senior Product Designer",
@@ -93,7 +93,7 @@ const projects: Project[] = [
     category: "Web Application",
     image: "from-slate-900 to-zinc-900",
     thumbnail: "https://drive.google.com/thumbnail?id=1xhwgqonWcL_zShg9bGukwMY58qYZ2--l&sz=w1600",
-    size: "md:col-span-2 md:row-span-2 h-[500px]",
+    size: "md:col-span-1 h-[500px]",
     readTime: "8 min",
     year: "2025",
     role: "Senior Product Designer",
@@ -148,7 +148,7 @@ const projects: Project[] = [
     category: "Branding & Identity",
     image: "from-blue-900 to-purple-900",
     thumbnail: "https://drive.google.com/thumbnail?id=1D7w73syv8t6GiKjZAPJiuJF_fnWZezeX&sz=w1600",
-    size: "md:col-span-1 h-[240px]",
+    size: "md:col-span-1 h-[500px]",
     readTime: "2 min",
     year: "2024",
     role: "Freelance Designer",
@@ -182,7 +182,7 @@ const projects: Project[] = [
     category: "Mobile Design",
     image: "from-emerald-900 to-teal-900",
     thumbnail: "https://drive.google.com/thumbnail?id=12VnulZRhjebMSjfGuV2eRwyKbHggDIbq&sz=w1600",
-    size: "md:col-span-1 h-[240px]",
+    size: "md:col-span-1 h-[500px]",
     readTime: "5 min",
     year: "2024",
     role: "Product Designer",
@@ -264,12 +264,12 @@ const CustomCursor = () => {
   const [isHovering, setIsHovering] = useState(false);
   
   // Use springs for smooth movement
-  const cursorX = useSpring(0, { stiffness: 500, damping: 28 });
-  const cursorY = useSpring(0, { stiffness: 500, damping: 28 });
+  const cursorX = useSpring(0, { stiffness: 1000, damping: 50 });
+  const cursorY = useSpring(0, { stiffness: 1000, damping: 50 });
   
   // Slightly slower spring for the outline to create a trailing effect
-  const outlineX = useSpring(0, { stiffness: 250, damping: 20 });
-  const outlineY = useSpring(0, { stiffness: 250, damping: 20 });
+  const outlineX = useSpring(0, { stiffness: 150, damping: 15 });
+  const outlineY = useSpring(0, { stiffness: 150, damping: 15 });
 
   useEffect(() => {
     const updateMousePosition = (e: MouseEvent) => {
@@ -584,34 +584,74 @@ const Hero = () => {
         </div>
 
         {/* Right Column: Metrics & Tools */}
-        <div className="flex flex-col gap-10 lg:pl-10">
+        <div className="flex flex-col gap-6 lg:pl-10">
+          {/* Experience Section */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.9 }}
+            className="flex flex-col gap-4 border-b border-white/10 pb-6"
+          >
+            <span className="text-white/60 text-xs uppercase tracking-widest font-mono text-left">Experience</span>
+            <div className="space-y-3">
+              <div>
+                <h3 className="text-white font-display font-bold text-base">Senior Product Designer</h3>
+                <div className="flex justify-between text-xs text-white/50 font-mono mt-0.5">
+                  <span>Freightify</span>
+                  <span>Jul 2025 — Present</span>
+                </div>
+              </div>
+              <div>
+                <h3 className="text-white font-display font-bold text-base">Junior Product Designer</h3>
+                <div className="flex justify-between text-xs text-white/50 font-mono mt-0.5">
+                  <span>Freightify</span>
+                  <span>Jul 2024 — Jul 2025</span>
+                </div>
+              </div>
+              <div>
+                <h3 className="text-white font-display font-bold text-base">Product Design Intern</h3>
+                <div className="flex justify-between text-xs text-white/50 font-mono mt-0.5">
+                  <span>Freightify</span>
+                  <span>Apr 2024 — Jul 2024</span>
+                </div>
+              </div>
+              <div>
+                <h3 className="text-white font-display font-bold text-base">Freelancer (Visual and UX/UI)</h3>
+                <div className="flex justify-between text-xs text-white/50 font-mono mt-0.5">
+                  <span>Self-employed</span>
+                  <span>Oct 2023 — Apr 2024</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
           {/* Metrics Section */}
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 1.0 }}
-            className="grid grid-cols-3 gap-4 border-b border-white/10 pb-10"
+            className="grid grid-cols-3 gap-4 border-b border-white/10 pb-6"
           >
             <div className="flex flex-col items-start">
-              <div className="flex items-center gap-3 mb-2 text-[var(--color-accent)]">
-                <Briefcase className="w-6 h-6" />
-                <span className="text-3xl md:text-4xl font-display font-bold">2+</span>
+              <div className="flex items-center gap-2 mb-1 text-[var(--color-accent)]">
+                <Briefcase className="w-5 h-5" />
+                <span className="text-2xl md:text-3xl font-display font-bold">3+</span>
               </div>
-              <p className="text-white/60 text-xs md:text-sm uppercase tracking-widest font-mono text-left">Years Exp.</p>
+              <p className="text-white/60 text-[10px] md:text-xs uppercase tracking-widest font-mono text-left">Years Exp.</p>
             </div>
             <div className="flex flex-col items-start">
-              <div className="flex items-center gap-3 mb-2 text-[var(--color-accent)]">
-                <Layers className="w-6 h-6" />
-                <span className="text-3xl md:text-4xl font-display font-bold">12+</span>
+              <div className="flex items-center gap-2 mb-1 text-[var(--color-accent)]">
+                <Layers className="w-5 h-5" />
+                <span className="text-2xl md:text-3xl font-display font-bold">12+</span>
               </div>
-              <p className="text-white/60 text-xs md:text-sm uppercase tracking-widest font-mono text-left">Projects</p>
+              <p className="text-white/60 text-[10px] md:text-xs uppercase tracking-widest font-mono text-left">Projects</p>
             </div>
             <div className="flex flex-col items-start">
-              <div className="flex items-center gap-3 mb-2 text-[var(--color-accent)]">
-                <Users className="w-6 h-6" />
-                <span className="text-3xl md:text-4xl font-display font-bold">10K+</span>
+              <div className="flex items-center gap-2 mb-1 text-[var(--color-accent)]">
+                <Users className="w-5 h-5" />
+                <span className="text-2xl md:text-3xl font-display font-bold">10K+</span>
               </div>
-              <p className="text-white/60 text-xs md:text-sm uppercase tracking-widest font-mono text-left">Users</p>
+              <p className="text-white/60 text-[10px] md:text-xs uppercase tracking-widest font-mono text-left">Users</p>
             </div>
           </motion.div>
 
@@ -620,54 +660,79 @@ const Hero = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 1.2 }}
-            className="grid grid-cols-1 sm:grid-cols-2 gap-8"
+            className="grid grid-cols-1 sm:grid-cols-2 gap-6"
           >
             {/* Design Tools */}
-            <div className="flex flex-col gap-4">
-              <span className="text-white/60 text-sm uppercase tracking-widest font-mono text-left">Design Tools</span>
-              <div className="flex items-center gap-4">
+            <div className="flex flex-col gap-3">
+              <span className="text-white/60 text-xs uppercase tracking-widest font-mono text-left">Design Tools</span>
+              <div className="flex items-center gap-3">
                 <div className="flex flex-col items-center gap-2 group">
-                  <div className="w-12 h-12 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#F24E1E] transition-colors">
-                    <PenTool className="w-6 h-6 text-white group-hover:text-[#F24E1E]" />
+                  <div className="w-10 h-10 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#F24E1E] transition-colors">
+                    <PenTool className="w-5 h-5 text-white group-hover:text-[#F24E1E]" />
                   </div>
-                  <span className="text-xs text-white/70">Figma</span>
+                  <span className="text-[10px] text-white/70">Figma</span>
                 </div>
                 <div className="flex flex-col items-center gap-2 group">
-                  <div className="w-12 h-12 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#0061FF] transition-colors">
-                    <Layout className="w-6 h-6 text-white group-hover:text-[#0061FF]" />
+                  <div className="w-10 h-10 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#0061FF] transition-colors">
+                    <Layout className="w-5 h-5 text-white group-hover:text-[#0061FF]" />
                   </div>
-                  <span className="text-xs text-white/70">Adobe</span>
+                  <span className="text-[10px] text-white/70">Adobe</span>
                 </div>
               </div>
             </div>
 
             {/* AI Tools */}
-            <div className="flex flex-col gap-4">
-              <span className="text-white/60 text-sm uppercase tracking-widest font-mono text-left">AI Tools</span>
-              <div className="flex items-center gap-4 flex-wrap">
+            <div className="flex flex-col gap-3">
+              <span className="text-white/60 text-xs uppercase tracking-widest font-mono text-left">AI Tools</span>
+              <div className="flex items-center gap-3 flex-wrap">
                 <div className="flex flex-col items-center gap-2 group">
-                  <div className="w-12 h-12 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#10A37F] transition-colors">
-                    <MessageSquare className="w-6 h-6 text-white group-hover:text-[#10A37F]" />
+                  <div className="w-10 h-10 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#10A37F] transition-colors">
+                    <MessageSquare className="w-5 h-5 text-white group-hover:text-[#10A37F]" />
                   </div>
-                  <span className="text-xs text-white/70">ChatGPT</span>
+                  <span className="text-[10px] text-white/70">ChatGPT</span>
                 </div>
                 <div className="flex flex-col items-center gap-2 group">
-                  <div className="w-12 h-12 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#FF0055] transition-colors">
-                    <Zap className="w-6 h-6 text-white group-hover:text-[#FF0055]" />
+                  <div className="w-10 h-10 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#FF0055] transition-colors">
+                    <Zap className="w-5 h-5 text-white group-hover:text-[#FF0055]" />
                   </div>
-                  <span className="text-xs text-white/70">Midjourney</span>
+                  <span className="text-[10px] text-white/70">Midjourney</span>
                 </div>
                 <div className="flex flex-col items-center gap-2 group">
-                  <div className="w-12 h-12 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#D97757] transition-colors">
-                    <Cpu className="w-6 h-6 text-white group-hover:text-[#D97757]" />
+                  <div className="w-10 h-10 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#D97757] transition-colors">
+                    <Cpu className="w-5 h-5 text-white group-hover:text-[#D97757]" />
                   </div>
-                  <span className="text-xs text-white/70">Claude</span>
+                  <span className="text-[10px] text-white/70">Claude</span>
                 </div>
                 <div className="flex flex-col items-center gap-2 group">
-                  <div className="w-12 h-12 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#4285F4] transition-colors">
-                    <Sparkles className="w-6 h-6 text-white group-hover:text-[#4285F4]" />
+                  <div className="w-10 h-10 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#4285F4] transition-colors">
+                    <Sparkles className="w-5 h-5 text-white group-hover:text-[#4285F4]" />
                   </div>
-                  <span className="text-xs text-white/70">AI Studio</span>
+                  <span className="text-[10px] text-white/70">AI Studio</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Project Management & Research Tools */}
+            <div className="flex flex-col gap-3 sm:col-span-2">
+              <span className="text-white/60 text-xs uppercase tracking-widest font-mono text-left">Project Management & Research</span>
+              <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex flex-col items-center gap-2 group">
+                  <div className="w-10 h-10 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#0052CC] transition-colors">
+                    <Trello className="w-5 h-5 text-white group-hover:text-[#0052CC]" />
+                  </div>
+                  <span className="text-[10px] text-white/70">Jira</span>
+                </div>
+                <div className="flex flex-col items-center gap-2 group">
+                  <div className="w-10 h-10 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#7856FF] transition-colors">
+                    <BarChart2 className="w-5 h-5 text-white group-hover:text-[#7856FF]" />
+                  </div>
+                  <span className="text-[10px] text-white/70">Mixpanel</span>
+                </div>
+                <div className="flex flex-col items-center gap-2 group">
+                  <div className="w-10 h-10 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#000000] transition-colors">
+                    <FileText className="w-5 h-5 text-white group-hover:text-white" />
+                  </div>
+                  <span className="text-[10px] text-white/70">Notion</span>
                 </div>
               </div>
             </div>
@@ -904,7 +969,7 @@ const Works = () => {
         </a>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {projects.map((project, index) => (
           <motion.div
             key={index}
@@ -1027,23 +1092,23 @@ const FAQ = () => {
   const faqs = [
     {
       question: "What is your design process?",
-      answer: "My process is deeply rooted in user-centric design thinking. I start with discovery and research to understand the problem space. Then, I move to wireframing and prototyping to test concepts. Finally, I move to high-fidelity visual design and handoff, ensuring every detail is polished."
+      answer: "I start with understanding the problem — talking to stakeholders, reviewing existing data, and identifying what's actually broken before touching any design tool. From there I move into structure: flows, wireframes, and information architecture. Once the logic is solid, I refine the visual layer and prototype for testing. Every decision ties back to user needs and business goals. No decoration for decoration's sake."
     },
     {
       question: "Do you take freelance projects?",
-      answer: "Yes, I am currently open to select freelance opportunities. I typically look for projects where I can add significant value, whether it's a complete product redesign, a new MVP, or a design system implementation."
+      answer: "Selectively. I take on projects where I can add real value — typically early-stage products, redesigns with clear scope, or teams that need a senior design perspective without a full-time hire. If the problem is interesting and the collaboration looks right, let's talk."
     },
     {
-      question: "What tools do you use?",
-      answer: "My primary stack includes Figma for interface design and prototyping. I also use Adobe Creative Suite (Photoshop, Illustrator) for asset creation, and I'm familiar with Webflow and Framer for web building. For 3D, I dabble in Blender."
+      question: "How do you use AI in your design process?",
+      answer: "As a thinking tool, not a shortcut. I use AI early in the process — to pressure-test ideas, explore directions quickly, and shape the narrative around a design through better copy and content framing. It speeds up the messy front-end work so I can spend more time on decisions that actually require design judgment."
     },
     {
       question: "Can you work with development teams?",
-      answer: "Absolutely. I have extensive experience working closely with engineers. I understand the constraints of CSS/HTML and React, which allows me to design feasible solutions and provide clean, organized developer handoffs."
+      answer: "Yes, and I prefer it. Good design falls apart without a solid handoff. I work closely with developers from early on — using their constraints to sharpen decisions, not fight them. I deliver production-ready specs, stay available during build, and QA the final output."
     },
     {
       question: "What industries have you worked in?",
-      answer: "I've worked across Fintech, EdTech, Healthcare, and E-commerce. I enjoy diving into new industries and understanding their specific user needs and business models."
+      answer: "Primarily tech — SaaS, consumer apps, and B2B products. I've also worked across fintech, e-commerce, and healthcare-adjacent products. The through-line is always complex systems that need to feel simple to the end user."
     }
   ];
 
@@ -1092,9 +1157,9 @@ const Footer = () => {
           </div>
 
           <div className="flex flex-col justify-end items-start md:items-end gap-8">
-            <a href="mailto:rajeevanvarun57@design.com" className="flex items-center gap-4 text-2xl hover:text-[var(--color-accent)] transition-colors group">
+            <a href="mailto:rajeevanvarun57@gmail.com" className="flex items-center gap-4 text-2xl hover:text-[var(--color-accent)] transition-colors group">
               <Mail className="w-6 h-6 group-hover:scale-110 transition-transform" />
-              rajeevanvarun57@design.com
+              rajeevanvarun57@gmail.com
             </a>
             <a href="tel:+917010963989" className="flex items-center gap-4 text-2xl hover:text-[var(--color-accent)] transition-colors group">
               <Phone className="w-6 h-6 group-hover:scale-110 transition-transform" />
