@@ -1,6 +1,6 @@
-import { useState, useEffect, type FC } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useSpring } from 'motion/react';
-import { ArrowUpRight, Menu, X, ChevronDown, Twitter, Linkedin, Dribbble, Mail, Phone, Search, BarChart2, FileText, Package, Ship, PenTool, Layout, Cpu, Zap, Users, Briefcase, Layers, MessageSquare, Sparkles, Trello } from 'lucide-react';
+import { Menu, X, Search, BarChart2, FileText, Package, Ship, Figma, Framer } from 'lucide-react';
 
 // --- Types & Data ---
 
@@ -9,7 +9,8 @@ type ProjectSection = {
   subtitle?: string;
   content?: string;
   items?: string[];
-  timelineItems?: { step: string; title: string; description: string; icon: any }[];
+  metrics?: { value: string; label: string; subLabel?: string }[];
+  timelineItems?: { step: string; title: string; subtitle?: string; description: string; icon: React.ElementType }[];
   highlight?: string;
   image?: string;
 };
@@ -20,12 +21,16 @@ type Project = {
   category: string;
   image: string; // Keep for gradient fallback
   thumbnail?: string; // New property for image URL
+  thumbnailClass?: string; // Optional class for thumbnail image
   footerImage?: string; // Image to display at the bottom of the project details
   size: string;
   readTime: string;
   year: string;
   role: string;
   client: string;
+  description?: string;
+  tags?: string[];
+  keyOutcomes?: { value: string; label: string; subLabel?: string; }[];
   sections: ProjectSection[];
 };
 
@@ -36,12 +41,15 @@ const projects: Project[] = [
     category: "SaaS Logistics Platform",
     image: "from-blue-900 to-slate-900",
     thumbnail: "https://drive.google.com/thumbnail?id=1RlrgP4tJl2Cjsapbxt5erX_TwP3sMbtJ&sz=w1600",
-    size: "md:col-span-1 h-[500px]",
+    size: "col-span-1 md:col-span-1 h-[500px]",
     readTime: "5 min",
     year: "2025",
     role: "Senior Product Designer",
     client: "Freightify",
     footerImage: "https://drive.google.com/thumbnail?id=1CcW01psEJN2gnZUY-S9u4C4emgCLvZcC&sz=w1600",
+    description: "Simplified the logistics booking process by turning a fragmented manual workflow into a cohesive, 2-step guided experience.",
+    tags: ["B2B", "SaaS", "Logistics", "UX Redesign"],
+    keyOutcomes: [{ value: "40%↑", label: "Task completion", subLabel: "efficiency" }, { value: "50%↑", label: "Faster booking", subLabel: "via TMS" }, { value: "1-Click", label: "Seamless sync", subLabel: "& integration" }],
     sections: [
       {
         title: "Scene 1 — The Friction",
@@ -73,9 +81,12 @@ const projects: Project[] = [
       {
         title: "Scene 4 — The Impact",
         content: "The results weren’t subtle.",
+        metrics: [
+          { value: "40%↑", label: "Task completion", subLabel: "efficiency" },
+          { value: "50%↑", label: "Faster booking", subLabel: "via TMS integration" },
+          { value: "1-Click", label: "Seamless sync", subLabel: "& integration" }
+        ],
         items: [
-          "📈 +40% increase in task completion efficiency",
-          "⚡ +50% faster booking creation via TMS integration",
           "🎯 Reduced onboarding friction for new users",
           "🔄 Stronger system consistency across the platform"
         ]
@@ -92,13 +103,21 @@ const projects: Project[] = [
     title: "Redesigning the Enquiry Module",
     category: "Web Application",
     image: "from-slate-900 to-zinc-900",
-    thumbnail: "https://drive.google.com/thumbnail?id=1xhwgqonWcL_zShg9bGukwMY58qYZ2--l&sz=w1600",
-    size: "md:col-span-1 h-[500px]",
+    thumbnail: "https://drive.google.com/thumbnail?id=18LvEhAApsd4zfVvNEhlTTvTIT_L4YwUn&sz=w1600",
+    size: "col-span-1 md:col-span-1 h-[500px]",
     readTime: "8 min",
     year: "2025",
     role: "Senior Product Designer",
     client: "Freightify Platform",
     footerImage: "https://drive.google.com/thumbnail?id=1-c2QdhEocqlyKUGa_oAYYpPqeVHRwUR2&sz=w1600",
+    description: "Connected severed workflows by turning a dead-end help desk feature into an actionable bridge for rate negotiation and booking.",
+    tags: ["B2B", "Web App", "Workflow", "0→1"],
+    keyOutcomes: [
+      { value: "~22%↓", label: "Duplicate", subLabel: "rate searches" },
+      { value: "73%", label: "Adoption rate", subLabel: "among active users" },
+      { value: "12", label: "User interviews", subLabel: "across 4 roles" },
+      { value: "100%", label: "Search-to-quote", subLabel: "conversion trackable" }
+    ],
     sections: [
       {
         title: "The Enquiry That Led Nowhere",
@@ -119,7 +138,7 @@ const projects: Project[] = [
         title: "Rebuilding the Map",
         content: "The original vision -- tracking a rate card's journey from search to booking -- made sense on paper. But when we started mapping it out, the complexity became obvious.\n\nA single rate search could branch into multiple paths. One enquiry might spawn three different quotes. A quote could sit idle for weeks, then suddenly convert. Another might get abandoned, revisited, modified, and merged with a different booking entirely. Tracking every possible path meant storing massive amounts of relational data across modules that weren't designed to talk to each other.\n\nWe could build it. But it would be slow, fragile, and nearly impossible to maintain.\n\nSo we stepped back and asked a different question: What does this module actually need to do?",
         highlight: "The answer wasn't \"track everything.\" It was \"don't make users start from scratch.\"",
-        image: "https://drive.google.com/thumbnail?id=1igRMQqPBz8O9lJUF3Qa7x0lqeFYLKz0j&sz=w1600"
+        image: "https://drive.google.com/thumbnail?id=1UXdah4VBgKX3tuqiH4OwgjdIoQ4mfg5R&sz=w1600"
       },
       {
         title: "The Trade-Off",
@@ -136,6 +155,16 @@ const projects: Project[] = [
         image: "https://drive.google.com/thumbnail?id=1cAdrCCNlFMocbjb5H3TYt_Sugd2SwFnu&sz=w1600"
       },
       {
+        title: "The Impact",
+        content: "By bridging the gap between enquiry and booking, we turned a dead-end feature into a continuous workflow.",
+        metrics: [
+          { value: "~22%↓", label: "Duplicate", subLabel: "rate searches" },
+          { value: "73%", label: "Adoption rate", subLabel: "among active users" },
+          { value: "12", label: "User interviews", subLabel: "across 4 roles" },
+          { value: "100%", label: "Search-to-quote", subLabel: "conversion trackable" }
+        ]
+      },
+      {
         title: "What We Learned",
         content: "The Enquiry module failed not because users didn't understand it, but because we hadn't finished building the thing it was supposed to be part of. Somewhere along the way, the vision got fragmented. Features were shipped in isolation. Knowledge transfer didn't happen. The module became a vestigial appendage -- technically working, practically useless.\n\nRevamping it wasn't about redesigning screens. It was about reconnecting severed workflows and asking what users actually needed to complete their work, not just record it.\n\nWe didn't track every possible path a rate card could take. We made sure it could take one clear path forward. Sometimes the best design decision is knowing what not to build.",
         highlight: "The module still records searches and negotiation requests. But now it also answers the question every user was silently asking: Okay, now what?"
@@ -148,11 +177,13 @@ const projects: Project[] = [
     category: "Branding & Identity",
     image: "from-blue-900 to-purple-900",
     thumbnail: "https://drive.google.com/thumbnail?id=1D7w73syv8t6GiKjZAPJiuJF_fnWZezeX&sz=w1600",
-    size: "md:col-span-1 h-[500px]",
+    size: "col-span-1 md:col-span-1 h-[500px]",
     readTime: "2 min",
     year: "2024",
     role: "Freelance Designer",
     client: "Kaizen HR",
+    description: "Developed a comprehensive brand identity and design system for Kaizen HR, emphasizing professional growth and continuous improvement.",
+    tags: ["Branding", "Identity", "Visual Design"],
     sections: [
       {
         title: "Concept Sketches",
@@ -182,73 +213,91 @@ const projects: Project[] = [
     category: "Mobile Design",
     image: "from-emerald-900 to-teal-900",
     thumbnail: "https://drive.google.com/thumbnail?id=12VnulZRhjebMSjfGuV2eRwyKbHggDIbq&sz=w1600",
-    size: "md:col-span-1 h-[500px]",
+    thumbnailClass: "object-cover object-center",
+    size: "col-span-1 md:col-span-1 h-[500px]",
     readTime: "5 min",
     year: "2024",
     role: "Product Designer",
     client: "Freightify",
     footerImage: "https://drive.google.com/thumbnail?id=1jUvXFHPE0yQKwI5pzcpOO_pl2j5Sp_nG&sz=w1600",
+    description: "Empowered shippers on the go with a mobile-first application to quickly search for competitive rates and submit booking requests.",
+    tags: ["B2B", "Mobile App", "Logistics", "0→1"],
+    keyOutcomes: [{ value: "0→1", label: "Strategic", subLabel: "ownership" }, { value: "40%↑", label: "Faster booking", subLabel: "time" }, { value: "5-Step", label: "Mobile-native", subLabel: "flow" }],
     sections: [
       {
         title: "Project Overview",
-        subtitle: "Empowering Shippers On The Go",
-        content: "In the freight forwarding industry, shippers often need to quickly search for competitive shipping rates, review detailed charges, and submit booking requests while away from their desks. This mobile application was designed to bring the full power of rate search and booking management into a pocket-sized, intuitive interface."
+        subtitle: "Designing a mobile-first rate search and booking experience for freight shippers",
+        content: "Freight forwarders operate in fast-moving, high-stakes environments where access to accurate shipping rates and the ability to act on them immediately can determine whether a shipment is won or lost. This project involved designing a mobile application that translated a complex, desktop-bound workflow into a streamlined, decision-ready experience — enabling shippers to search rates, evaluate charges, and submit bookings entirely from their mobile devices.",
+        metrics: [
+          { value: "0→1", label: "Strategic", subLabel: "ownership" },
+          { value: "40%↑", label: "Faster booking", subLabel: "time" },
+          { value: "5-Step", label: "Mobile-native", subLabel: "flow" }
+        ]
       },
-
       {
         title: "The Problem",
-        subtitle: "Complex Desktop Workflows Don't Translate to Mobile",
-        content: "Existing rate search and booking systems were designed for desktop, requiring shippers to navigate complex multi-step processes with large data tables. Key pain points included:",
+        subtitle: "Existing tools were built for desktops — not for how shippers actually work",
+        content: "Rate search and booking systems in the freight forwarding industry were designed around desktop interfaces with large data tables and multi-step navigation. For shippers operating on-site at ports or warehouses, this created significant friction.",
         items: [
-          "Shippers couldn't check or compare rates while on-site at ports or warehouses",
-          "Complex charge breakdowns were impossible to read on small screens",
-          "Booking requests required desktop access, causing delays",
-          "No visibility into booking status from mobile devices"
+          "Unable to check or compare rates while on-site",
+          "Charge breakdowns were unreadable on small screens",
+          "Booking required desktop access, introducing delays",
+          "No visibility into booking status from a mobile device"
         ]
       },
       {
         title: "Design Goals",
-        subtitle: "Mobile-First, Data-Rich, Action-Oriented",
-        content: "The design needed to balance information density with mobile usability, ensuring shippers could make informed decisions quickly.",
+        subtitle: "Mobile-first, information-dense, and optimised for speed of decision",
+        content: "The core design challenge was balancing data richness with mobile usability — ensuring shippers could access the information they needed without cognitive overload.",
         items: [
-          "Enable full rate search with origin/destination, carrier selection, and equipment types",
-          "Present complex pricing data in scannable, mobile-optimized layouts",
-          "Provide one-tap booking request with clear confirmation flow",
-          "Create a unified booking management view with status tracking"
+          "Full rate search across origin, destination, carrier, and equipment type",
+          "Complex pricing data presented in scannable, layered layouts",
+          "One-tap booking with a clear, low-friction confirmation flow",
+          "Unified booking management with real-time status tracking"
         ]
       },
       {
+        title: "Design Rationale",
+        highlight: "Rather than simply adapting the desktop interface for smaller screens, I approached this as a context-first redesign. Mobile shippers have different cognitive loads, time pressures, and physical environments than desktop users — so the information hierarchy, interaction patterns, and visual density were rebuilt from the ground up to reflect that."
+      },
+      {
         title: "User Flow",
-        subtitle: "From Search to Booking in 5 Steps",
+        subtitle: "A five-step flow from rate discovery to confirmed booking",
+        content: "The user flow was structured to mirror the shipper's natural decision-making process — moving from broad exploration to a specific, committed action. Each step reduces ambiguity and builds confidence toward booking.",
         timelineItems: [
           { 
             step: "01", 
-            title: "Configure Search", 
-            description: "Shipper sets origin, destination, service type (FCL/LCL/AIR), carrier preferences, and equipment requirements.",
+            title: "Configure Search",
+            subtitle: "Define the shipment parameters",
+            description: "The shipper sets origin, destination, service type (FCL, LCL, or AIR), carrier preferences, and equipment requirements. This input layer was designed to be fast to complete while collecting all variables needed to surface accurate, relevant results.",
             icon: Search
           },
           { 
             step: "02", 
             title: "Browse Results", 
-            description: "View 24+ rate results from multiple carriers with live rates, transit times, and pricing comparison across equipment types.",
+            subtitle: "Evaluate carrier rates at a glance",
+            description: "24+ live carrier rates are presented with transit times and equipment pricing in a scannable list format. The layout was optimised to support quick comparison without requiring horizontal scrolling or table navigation.",
             icon: BarChart2
           },
           { 
             step: "03", 
             title: "Review Charges", 
-            description: "Drill into detailed charge breakdowns—freight, origin, destination—with per-unit and total calculations.",
+            subtitle: "Drill into itemised cost breakdowns",
+            description: "Shippers can expand any rate to view a full charge breakdown — freight, origin, and destination costs — with per-unit and total calculations. Transparency at this stage reduces back-and-forth with operations teams and supports faster sign-off.",
             icon: FileText
           },
           { 
             step: "04", 
             title: "Submit Booking", 
-            description: "One-tap booking request with instant confirmation, booking ID generation, and email notification.",
+            subtitle: "Confirm and book in a single action",
+            description: "A one-tap booking request triggers an instant confirmation screen with a generated booking ID and email notification. The confirmation flow was designed to be irreversible yet reassuring — reducing drop-off caused by uncertainty at the final step.",
             icon: Package
           },
           { 
             step: "05", 
             title: "Track & Manage", 
-            description: "Monitor all bookings with status filters, view summaries, and manage shipment details from a centralized dashboard.",
+            subtitle: "Monitor all bookings from a centralised dashboard",
+            description: "A unified management view surfaces booking status, shipment summaries, and filtering by status — giving shippers ongoing visibility without needing to contact operations. This closes the loop on the end-to-end mobile experience.",
             icon: Ship
           }
         ]
@@ -257,23 +306,41 @@ const projects: Project[] = [
   }
 ];
 
+const faqs = [
+  {
+    question: "What is your design process?",
+    answer: "I start with understanding the problem — talking to stakeholders, reviewing existing data, and identifying what's actually broken before touching any design tool. From there I move into structure: flows, wireframes, and information architecture. Once the logic is solid, I refine the visual layer and prototype for testing. Every decision ties back to user needs and business goals. No decoration for decoration's sake."
+  },
+  {
+    question: "Do you take freelance projects?",
+    answer: "Selectively. I take on projects where I can add real value — typically early-stage products, redesigns with clear scope, or teams that need a senior design perspective without a full-time hire. If the problem is interesting and the collaboration looks right, let's talk."
+  },
+  {
+    question: "How do you use AI in your design process?",
+    answer: "As a thinking tool, not a shortcut. I use AI early in the process — to pressure-test ideas, explore directions quickly, and shape the narrative around a design through better copy and content framing. It speeds up the messy front-end work so I can spend more time on decisions that actually require design judgment."
+  },
+  {
+    question: "Can you work with development teams?",
+    answer: "Yes, and I prefer it. Good design falls apart without a solid handoff. I work closely with developers from early on — using their constraints to sharpen decisions, not fight them. I deliver production-ready specs, stay available during build, and QA the final output."
+  },
+  {
+    question: "What industries have you worked in?",
+    answer: "Primarily tech — SaaS, consumer apps, and B2B products. I've also worked across fintech, e-commerce, and healthcare-adjacent products. The through-line is always complex systems that need to feel simple to the end user."
+  }
+];
+
 // --- Components ---
 
 const CustomCursor = () => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
   
-  // Use springs for smooth movement
-  const cursorX = useSpring(0, { stiffness: 1000, damping: 50 });
-  const cursorY = useSpring(0, { stiffness: 1000, damping: 50 });
-  
-  // Slightly slower spring for the outline to create a trailing effect
-  const outlineX = useSpring(0, { stiffness: 150, damping: 15 });
-  const outlineY = useSpring(0, { stiffness: 150, damping: 15 });
+  const cursorX = useSpring(0, { stiffness: 800, damping: 35 });
+  const cursorY = useSpring(0, { stiffness: 800, damping: 35 });
+  const outlineX = useSpring(0, { stiffness: 200, damping: 20 });
+  const outlineY = useSpring(0, { stiffness: 200, damping: 20 });
 
   useEffect(() => {
     const updateMousePosition = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
       outlineX.set(e.clientX);
@@ -307,18 +374,20 @@ const CustomCursor = () => {
   return (
     <>
       <motion.div
-        className="cursor-dot fixed pointer-events-none z-[100] hidden md:block rounded-full bg-[var(--color-accent)]"
+        className="fixed pointer-events-none z-[9999] hidden md:block rounded-full bg-[var(--color-ember)]"
         style={{ 
           x: cursorX, 
           y: cursorY,
           translateX: "-50%",
           translateY: "-50%",
-          width: 8,
-          height: 8
+          width: 12,
+          height: 12,
         }}
+        animate={{ scale: isHovering ? 2 : 1 }}
+        transition={{ type: "spring", stiffness: 400, damping: 28 }}
       />
       <motion.div
-        className="cursor-outline fixed pointer-events-none z-[100] hidden md:block rounded-full border border-white/50 transition-colors duration-200"
+        className="fixed pointer-events-none z-[9998] hidden md:block rounded-full border-[1.5px] border-[var(--color-ember)] mix-blend-multiply opacity-50"
         style={{
           x: outlineX,
           y: outlineY,
@@ -328,8 +397,7 @@ const CustomCursor = () => {
         animate={{
           width: isHovering ? 60 : 40,
           height: isHovering ? 60 : 40,
-          backgroundColor: isHovering ? "rgba(255, 255, 255, 0.1)" : "transparent",
-          borderColor: isHovering ? "transparent" : "rgba(255, 255, 255, 0.5)"
+          opacity: isHovering ? 1 : 0.5
         }}
         transition={{
           type: "spring",
@@ -342,801 +410,482 @@ const CustomCursor = () => {
 };
 
 const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [isMobileMenuOpen]);
 
   const navLinks = [
-    { name: 'Home', href: '#hero' },
     { name: 'Works', href: '#works' },
     { name: 'About', href: '#about' },
     { name: 'Contact', href: '#contact' },
   ];
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'py-4 bg-black/50 backdrop-blur-md border-b border-white/5' : 'py-8 bg-transparent'
-      }`}
-    >
-      <div className="max-w-[1600px] mx-auto px-6 md:px-20 flex justify-between items-center">
-        <a href="#" className="text-2xl font-display font-bold tracking-tighter text-white z-50">
-          VARUN<span className="text-[var(--color-accent)]">.</span>
-        </a>
+    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-6 mix-blend-multiply pointer-events-none">
+      <a href="#" className="font-sans font-extrabold text-xl tracking-tight text-[var(--color-ink)] pointer-events-auto hover-target">
+        VARUN<span className="text-[var(--color-ember)]">.</span>
+      </a>
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className="text-sm font-medium text-white/70 hover:text-[var(--color-accent)] transition-colors uppercase tracking-widest"
-            >
+      {/* Desktop Nav */}
+      <ul className="hidden md:flex items-center gap-10 pointer-events-auto">
+        {navLinks.map((link) => (
+          <li key={link.name}>
+            <a href={link.href} className="font-mono text-sm tracking-[0.12em] uppercase text-[var(--color-muted)] hover:text-[var(--color-ember)] hover-target transition-colors">
               {link.name}
             </a>
-          ))}
+          </li>
+        ))}
+        <li>
           <a
-            href="#contact"
-            className="px-6 py-2 border border-white/20 rounded-full text-sm font-medium hover:bg-white hover:text-black transition-all duration-300"
+            href="https://drive.google.com/uc?export=download&id=1NYNGvvaH1xLprt30l1Q9eDL0ei8ZMXLE"
+            className="font-mono text-sm tracking-[0.1em] uppercase bg-[var(--color-ink)] text-[var(--color-paper)] px-5 py-2.5 hover:bg-[var(--color-ember)] hover:text-white transition-colors hover-target"
           >
-            Let's Talk
+            Resume ↓
           </a>
-        </div>
+        </li>
+      </ul>
 
-        {/* Mobile Menu Toggle */}
-        <button
-          className="md:hidden text-white z-50"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? <X /> : <Menu />}
-        </button>
+      {/* Mobile Menu Toggle */}
+      <button
+        className="md:hidden text-[var(--color-ink)] z-50 pointer-events-auto"
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+      >
+        {isMobileMenuOpen ? <X /> : <Menu />}
+      </button>
 
-        {/* Mobile Nav Overlay */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="fixed inset-0 bg-black z-40 flex flex-col items-center justify-center gap-8 md:hidden"
+      {/* Mobile Nav Overlay */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed inset-0 bg-[var(--color-paper)] z-40 flex flex-col items-center justify-center gap-8 md:hidden pointer-events-auto mix-blend-normal"
+          >
+            {navLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="font-display text-4xl text-[var(--color-ink)] hover:text-[var(--color-ember)] transition-colors"
+              >
+                {link.name}
+              </a>
+            ))}
+            <a
+              href="https://drive.google.com/uc?export=download&id=1NYNGvvaH1xLprt30l1Q9eDL0ei8ZMXLE"
+              className="font-mono text-sm tracking-widest uppercase bg-[var(--color-ink)] text-[var(--color-paper)] px-8 py-3 mt-4"
             >
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-3xl font-display font-bold text-white hover:text-[var(--color-accent)] transition-colors"
-                >
-                  {link.name}
-                </a>
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+              Resume ↓
+            </a>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
-  );
-};
-
-const CosmicAnimation = () => {
-  // Nebula clouds - soft glowing areas
-  const nebulaClouds = [
-    { id: 1, color: "bg-indigo-900", size: "w-[800px] h-[800px]", left: "-10%", top: "-20%", delay: 0, duration: 25 },
-    { id: 2, color: "bg-purple-900", size: "w-[600px] h-[600px]", left: "70%", top: "40%", delay: 5, duration: 30 },
-    { id: 3, color: "bg-blue-900", size: "w-[700px] h-[700px]", left: "20%", top: "60%", delay: 2, duration: 28 },
-    { id: 4, color: "bg-slate-900", size: "w-[500px] h-[500px]", left: "50%", top: "-10%", delay: 8, duration: 35 },
-  ];
-
-  // Stars - subtle twinkling background
-  const stars = Array.from({ length: 70 }).map((_, i) => ({
-    id: i,
-    size: Math.random() * 2 + 1,
-    left: Math.random() * 100,
-    top: Math.random() * 100,
-    opacity: Math.random() * 0.5 + 0.1,
-    duration: Math.random() * 3 + 2,
-  }));
-
-  // Shooting stars - occasional and smooth
-  const shootingStars = Array.from({ length: 4 }).map((_, i) => ({
-    id: i,
-    left: Math.random() * 100,
-    top: Math.random() * 40, // Start from upper half
-    delay: Math.random() * 10 + 2,
-  }));
-
-  return (
-    <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden bg-[#020617]">
-      {/* Deep Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#020617] via-[#0f172a] to-[#000000] opacity-90" />
-
-      {/* Nebula Clouds */}
-      {nebulaClouds.map((cloud) => (
-        <motion.div
-          key={cloud.id}
-          className={`absolute rounded-full mix-blend-screen filter blur-[120px] opacity-20 ${cloud.color} ${cloud.size}`}
-          style={{ left: cloud.left, top: cloud.top }}
-          animate={{
-            x: [0, 50, 0, -50, 0],
-            y: [0, 30, 0, -30, 0],
-            scale: [1, 1.1, 1, 0.9, 1],
-            opacity: [0.15, 0.25, 0.15],
-          }}
-          transition={{
-            duration: cloud.duration,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
-
-      {/* Twinkling Stars */}
-      {stars.map((star) => (
-        <motion.div
-          key={`star-${star.id}`}
-          className="absolute rounded-full bg-white"
-          style={{
-            width: star.size,
-            height: star.size,
-            left: `${star.left}%`,
-            top: `${star.top}%`,
-            opacity: star.opacity,
-          }}
-          animate={{
-            opacity: [star.opacity, star.opacity * 0.3, star.opacity],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: star.duration,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: Math.random() * 5,
-          }}
-        />
-      ))}
-
-      {/* Shooting Stars */}
-      {shootingStars.map((star) => (
-        <motion.div
-          key={`shooting-${star.id}`}
-          className="absolute w-1 h-1 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,1)]"
-          style={{
-            left: `${star.left}%`,
-            top: `${star.top}%`,
-          }}
-          initial={{ opacity: 0, x: 0, y: 0 }}
-          animate={{
-            x: [0, 400],
-            y: [0, 400],
-            opacity: [0, 1, 0],
-          }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
-            delay: star.delay,
-            repeatDelay: Math.random() * 15 + 10, // Long random delay
-            ease: "easeOut",
-          }}
-        />
-      ))}
-      
-      {/* Soft Vignette */}
-      <div className="absolute inset-0 bg-radial-gradient-to-t from-transparent via-transparent to-black/60" />
-    </div>
   );
 };
 
 const Hero = () => {
   return (
-    <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden py-20">
-      {/* Background Elements */}
-      <CosmicAnimation />
-
-      <div className="relative z-10 px-6 md:px-20 max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
-        {/* Left Column: Intro */}
-        <div className="flex flex-col items-start text-left">
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
-            className="text-3xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-8 leading-[1.1]"
-          >
-            Hey, I’m Varun — <span className="text-[var(--color-accent)]">a Product Designer.</span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="text-white/70 text-lg md:text-2xl max-w-xl mb-10 font-light leading-relaxed"
-          >
-            Right now, I’m building SaaS products at Freightify, Chennai.
-            <br className="block mt-4" />
-            I design clean, easy-to-use experiences that make complex systems feel effortless.
-          </motion.p>
-          
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
-            className="flex flex-col sm:flex-row items-center gap-6"
-          >
-            <a
-              href="#works"
-              className="px-8 py-4 bg-white text-black rounded-full font-bold hover:bg-[var(--color-accent)] hover:shadow-[0_0_40px_rgba(249,115,22,0.4)] transition-all duration-300 w-full sm:w-auto text-center"
-            >
-              View Works
-            </a>
-            <a
-              href="#contact"
-              className="px-8 py-4 border border-white/20 text-white rounded-full font-medium hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] hover:shadow-[0_0_40px_rgba(249,115,22,0.2)] transition-all duration-300 w-full sm:w-auto text-center"
-            >
-              Get in Touch
-            </a>
-          </motion.div>
-        </div>
-
-        {/* Right Column: Metrics & Tools */}
-        <div className="flex flex-col gap-6 lg:pl-10">
-          {/* Experience Section */}
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.9 }}
-            className="flex flex-col gap-4 border-b border-white/10 pb-6"
-          >
-            <span className="text-white/60 text-xs uppercase tracking-widest font-mono text-left">Experience</span>
-            <div className="space-y-3">
-              <div>
-                <h3 className="text-white font-display font-bold text-base">Senior Product Designer</h3>
-                <div className="flex justify-between text-xs text-white/50 font-mono mt-0.5">
-                  <span>Freightify</span>
-                  <span>Jul 2025 — Present</span>
-                </div>
-              </div>
-              <div>
-                <h3 className="text-white font-display font-bold text-base">Junior Product Designer</h3>
-                <div className="flex justify-between text-xs text-white/50 font-mono mt-0.5">
-                  <span>Freightify</span>
-                  <span>Jul 2024 — Jul 2025</span>
-                </div>
-              </div>
-              <div>
-                <h3 className="text-white font-display font-bold text-base">Product Design Intern</h3>
-                <div className="flex justify-between text-xs text-white/50 font-mono mt-0.5">
-                  <span>Freightify</span>
-                  <span>Apr 2024 — Jul 2024</span>
-                </div>
-              </div>
-              <div>
-                <h3 className="text-white font-display font-bold text-base">Freelancer (Visual and UX/UI)</h3>
-                <div className="flex justify-between text-xs text-white/50 font-mono mt-0.5">
-                  <span>Self-employed</span>
-                  <span>Oct 2023 — Apr 2024</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Metrics Section */}
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 1.0 }}
-            className="grid grid-cols-3 gap-4 border-b border-white/10 pb-6"
-          >
-            <div className="flex flex-col items-start">
-              <div className="flex items-center gap-2 mb-1 text-[var(--color-accent)]">
-                <Briefcase className="w-5 h-5" />
-                <span className="text-2xl md:text-3xl font-display font-bold">3+</span>
-              </div>
-              <p className="text-white/60 text-[10px] md:text-xs uppercase tracking-widest font-mono text-left">Years Exp.</p>
-            </div>
-            <div className="flex flex-col items-start">
-              <div className="flex items-center gap-2 mb-1 text-[var(--color-accent)]">
-                <Layers className="w-5 h-5" />
-                <span className="text-2xl md:text-3xl font-display font-bold">12+</span>
-              </div>
-              <p className="text-white/60 text-[10px] md:text-xs uppercase tracking-widest font-mono text-left">Projects</p>
-            </div>
-            <div className="flex flex-col items-start">
-              <div className="flex items-center gap-2 mb-1 text-[var(--color-accent)]">
-                <Users className="w-5 h-5" />
-                <span className="text-2xl md:text-3xl font-display font-bold">10K+</span>
-              </div>
-              <p className="text-white/60 text-[10px] md:text-xs uppercase tracking-widest font-mono text-left">Users</p>
-            </div>
-          </motion.div>
-
-          {/* Tools Section */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 1.2 }}
-            className="grid grid-cols-1 sm:grid-cols-2 gap-6"
-          >
-            {/* Design Tools */}
-            <div className="flex flex-col gap-3">
-              <span className="text-white/60 text-xs uppercase tracking-widest font-mono text-left">Design Tools</span>
-              <div className="flex items-center gap-3">
-                <div className="flex flex-col items-center gap-2 group">
-                  <div className="w-10 h-10 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#F24E1E] transition-colors">
-                    <PenTool className="w-5 h-5 text-white group-hover:text-[#F24E1E]" />
-                  </div>
-                  <span className="text-[10px] text-white/70">Figma</span>
-                </div>
-                <div className="flex flex-col items-center gap-2 group">
-                  <div className="w-10 h-10 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#0061FF] transition-colors">
-                    <Layout className="w-5 h-5 text-white group-hover:text-[#0061FF]" />
-                  </div>
-                  <span className="text-[10px] text-white/70">Adobe</span>
-                </div>
-              </div>
-            </div>
-
-            {/* AI Tools */}
-            <div className="flex flex-col gap-3">
-              <span className="text-white/60 text-xs uppercase tracking-widest font-mono text-left">AI Tools</span>
-              <div className="flex items-center gap-3 flex-wrap">
-                <div className="flex flex-col items-center gap-2 group">
-                  <div className="w-10 h-10 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#10A37F] transition-colors">
-                    <MessageSquare className="w-5 h-5 text-white group-hover:text-[#10A37F]" />
-                  </div>
-                  <span className="text-[10px] text-white/70">ChatGPT</span>
-                </div>
-                <div className="flex flex-col items-center gap-2 group">
-                  <div className="w-10 h-10 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#FF0055] transition-colors">
-                    <Zap className="w-5 h-5 text-white group-hover:text-[#FF0055]" />
-                  </div>
-                  <span className="text-[10px] text-white/70">Midjourney</span>
-                </div>
-                <div className="flex flex-col items-center gap-2 group">
-                  <div className="w-10 h-10 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#D97757] transition-colors">
-                    <Cpu className="w-5 h-5 text-white group-hover:text-[#D97757]" />
-                  </div>
-                  <span className="text-[10px] text-white/70">Claude</span>
-                </div>
-                <div className="flex flex-col items-center gap-2 group">
-                  <div className="w-10 h-10 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#4285F4] transition-colors">
-                    <Sparkles className="w-5 h-5 text-white group-hover:text-[#4285F4]" />
-                  </div>
-                  <span className="text-[10px] text-white/70">AI Studio</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Project Management & Research Tools */}
-            <div className="flex flex-col gap-3 sm:col-span-2">
-              <span className="text-white/60 text-xs uppercase tracking-widest font-mono text-left">Project Management & Research</span>
-              <div className="flex items-center gap-3 flex-wrap">
-                <div className="flex flex-col items-center gap-2 group">
-                  <div className="w-10 h-10 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#0052CC] transition-colors">
-                    <Trello className="w-5 h-5 text-white group-hover:text-[#0052CC]" />
-                  </div>
-                  <span className="text-[10px] text-white/70">Jira</span>
-                </div>
-                <div className="flex flex-col items-center gap-2 group">
-                  <div className="w-10 h-10 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#7856FF] transition-colors">
-                    <BarChart2 className="w-5 h-5 text-white group-hover:text-[#7856FF]" />
-                  </div>
-                  <span className="text-[10px] text-white/70">Mixpanel</span>
-                </div>
-                <div className="flex flex-col items-center gap-2 group">
-                  <div className="w-10 h-10 rounded-xl bg-[#1e1e1e] border border-white/10 flex items-center justify-center group-hover:border-[#000000] transition-colors">
-                    <FileText className="w-5 h-5 text-white group-hover:text-white" />
-                  </div>
-                  <span className="text-[10px] text-white/70">Notion</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
+    <section id="hero" className="min-h-screen grid grid-cols-1 md:grid-cols-2 relative overflow-hidden">
+      {/* Left */}
+      <div className="flex flex-col justify-end pt-32 pb-20 px-6 md:px-12 relative md:border-r border-b md:border-b-0 border-[var(--color-border)]">
+        <motion.div
+           initial={{ opacity: 0, y: 24 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ duration: 0.7, delay: 0.1 }}
+           className="font-mono text-sm tracking-[0.15em] uppercase text-[var(--color-ember)] mb-8 flex items-center gap-2.5"
+        >
+           <span className="w-8 h-[1px] bg-[var(--color-ember)]" />
+           Senior Product Designer — Chennai, IN
+        </motion.div>
+        <motion.h1
+           initial={{ opacity: 0, y: 24 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ duration: 0.7, delay: 0.25 }}
+           className="font-display text-[4rem] sm:text-[6vw] md:text-[7.5rem] leading-[0.95] tracking-[-0.02em] mb-8 text-[var(--color-ink)]"
+        >
+           Hey,<br />I'm <em className="text-[var(--color-ember)] italic">Varun</em>
+        </motion.h1>
+        <motion.div
+           initial={{ opacity: 0, y: 24 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ duration: 0.7, delay: 0.4 }}
+           className="font-mono text-base leading-[1.8] text-[var(--color-muted)] max-w-[380px] border-l-2 border-[var(--color-ember)] pl-5 mb-12"
+        >
+           Building SaaS products at Freightify. I design clean, easy-to-use experiences that make complex systems feel effortless.
+        </motion.div>
+        <motion.div
+           initial={{ opacity: 0, y: 24 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ duration: 0.7, delay: 0.55 }}
+           className="flex flex-wrap gap-4 items-center"
+        >
+           <a href="#works" className="bg-[var(--color-ember)] text-white font-mono text-sm tracking-[0.1em] uppercase px-8 py-4 hover:bg-[var(--color-ink)] hover:-translate-y-0.5 transition-all hover-target inline-block">
+             View Works
+           </a>
+           <a href="#contact" className="text-[var(--color-ink)] font-mono text-sm tracking-[0.1em] uppercase px-8 py-4 border border-[var(--color-border)] hover:border-[var(--color-ember)] hover:text-[var(--color-ember)] hover:-translate-y-0.5 transition-all hover-target inline-block">
+             Get in Touch
+           </a>
+        </motion.div>
       </div>
 
-      {/* Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.4, duration: 1 }}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-      >
-        <span className="text-[10px] uppercase tracking-widest text-white/40">Scroll</span>
-        <div className="w-[1px] h-8 bg-gradient-to-b from-white/0 via-white/40 to-white/0" />
-      </motion.div>
+      {/* Right */}
+      <div className="flex flex-col justify-between pt-12 md:pt-32 pb-20 px-6 md:px-12 bg-[var(--color-paper2)]">
+        <motion.div
+           initial={{ opacity: 0, y: 24 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ duration: 0.7, delay: 0.25 }}
+        >
+           <div className="font-mono text-[13px] tracking-[0.2em] uppercase text-[var(--color-muted)] mb-6">Experience</div>
+           <div className="flex flex-col gap-0 border-t border-[var(--color-border)]">
+             {[
+               { role: "Senior Product Designer", co: "Freightify", date: "Jul 2025 — Present" },
+               { role: "Junior Product Designer", co: "Freightify", date: "Jul 2024 — Jul 2025" },
+               { role: "Product Design Intern", co: "Freightify", date: "Apr 2024 — Jul 2024" },
+               { role: "Freelancer — Visual & UX/UI", co: "Self-employed", date: "Oct 2023 — Apr 2024" },
+             ].map((exp, i) => (
+               <div key={i} className="grid grid-cols-[1fr_auto] gap-4 py-[1.1rem] border-b border-[var(--color-border)] group items-start hover:bg-black/5 transition-colors hover-target">
+                 <div>
+                   <div className="font-sans text-base font-semibold tracking-[-0.01em] group-hover:text-[var(--color-ember)] transition-colors">{exp.role}</div>
+                   <div className="font-mono text-sm text-[var(--color-muted)] mt-[2px]">{exp.co}</div>
+                 </div>
+                 <div className="font-mono text-[13px] text-[var(--color-muted)] text-right whitespace-nowrap">{exp.date}</div>
+               </div>
+             ))}
+           </div>
+        </motion.div>
+
+        <motion.div
+           initial={{ opacity: 0, y: 24 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ duration: 0.7, delay: 0.25 }}
+           className="mt-12"
+        >
+           <div className="grid grid-cols-3 border border-[var(--color-border)]">
+             <div className="p-4 md:p-5 border-r border-[var(--color-border)]">
+               <div className="font-display text-3xl md:text-[2.2rem] text-[var(--color-ember)] leading-none mb-1">3+</div>
+               <div className="font-mono text-[13px] tracking-[0.1em] uppercase text-[var(--color-muted)]">Years exp.</div>
+             </div>
+             <div className="p-4 md:p-5 border-r border-[var(--color-border)]">
+               <div className="font-display text-3xl md:text-[2.2rem] text-[var(--color-ember)] leading-none mb-1">12+</div>
+               <div className="font-mono text-[13px] tracking-[0.1em] uppercase text-[var(--color-muted)]">Projects</div>
+             </div>
+             <div className="p-4 md:p-5">
+               <div className="font-display text-3xl md:text-[2.2rem] text-[var(--color-ember)] leading-none mb-1">10K+</div>
+               <div className="font-mono text-[13px] tracking-[0.1em] uppercase text-[var(--color-muted)]">Users</div>
+             </div>
+           </div>
+
+           <div className="mt-10">
+             <div className="font-mono text-[13px] tracking-[0.2em] uppercase text-[var(--color-muted)] mb-3">Tools</div>
+             <div className="flex flex-wrap gap-2">
+               {['Figma', 'Adobe', 'ChatGPT', 'Midjourney', 'Claude', 'AI Studio', 'Jira', 'Mixpanel', 'Notion'].map((tool) => (
+                 <span key={tool} className="font-mono text-[13px] tracking-[0.08em] uppercase px-[12px] py-[5px] border border-[var(--color-border)] text-[var(--color-muted)] hover:border-[var(--color-ember)] hover:text-[var(--color-ember)] transition-colors hover-target inline-block bg-transparent">
+                   {tool}
+                 </span>
+               ))}
+             </div>
+           </div>
+        </motion.div>
+      </div>
     </section>
   );
 };
 
-const ProjectDetailsModal = ({ project, onClose }: { project: Project; onClose: () => void }) => {
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, []);
-
+const Marquee = () => {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-20"
-    >
-      <div className="absolute inset-0 bg-black/90 backdrop-blur-xl" onClick={onClose} />
-      
+    <div className="overflow-hidden bg-[var(--color-ink)] py-4 whitespace-nowrap border-y border-[var(--color-border)] flex items-center">
       <motion.div
-        layoutId={`project-${project.id}`}
-        className="relative w-full max-w-[1600px] h-full md:h-[90vh] bg-[#0a0a0a] rounded-3xl overflow-hidden border border-white/10 flex flex-col shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
+        animate={{ x: ["0%", "-50%"] }}
+        transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+        className="inline-block"
       >
-        {/* Close Button */}
-        <button 
-          onClick={onClose}
-          className="absolute top-6 right-6 z-20 w-12 h-12 rounded-full bg-black/50 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-white hover:text-black transition-colors"
-        >
-          <X className="w-6 h-6" />
-        </button>
-
-        {/* Hero Image */}
-        <div className={`w-full h-[25vh] relative shrink-0 overflow-hidden`}>
-           {project.thumbnail ? (
-             <img 
-               src={project.thumbnail} 
-               alt={project.title} 
-               className="absolute inset-0 w-full h-full object-cover"
-               referrerPolicy="no-referrer"
-             />
-           ) : (
-             <div className={`absolute inset-0 bg-gradient-to-br ${project.image}`} />
-           )}
-           <div className="absolute inset-0 bg-black/20" />
-           <div className="absolute bottom-0 left-0 w-full p-6 md:p-10 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/60 to-transparent flex flex-col justify-end">
-              <span className="text-[var(--color-accent)] font-mono text-xs md:text-sm uppercase tracking-widest mb-2 block">{project.category}</span>
-              <h2 className="text-3xl md:text-5xl font-display font-bold leading-none mb-4">{project.title}</h2>
-              
-              <div className="flex flex-wrap gap-3">
-                 <span className="px-3 py-1 rounded-full border border-white/20 bg-black/20 backdrop-blur-md text-xs text-white/80">Year: {project.year}</span>
-                 <span className="px-3 py-1 rounded-full border border-white/20 bg-black/20 backdrop-blur-md text-xs text-white/80">Role: {project.role}</span>
-                 <span className="px-3 py-1 rounded-full border border-white/20 bg-black/20 backdrop-blur-md text-xs text-white/80">Client: {project.client}</span>
-              </div>
-           </div>
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
-          <div className="p-6 md:p-10 max-w-full mx-auto space-y-12 flex-1">
-             {project.sections.map((section, index) => (
-               <div key={index} className="space-y-6">
-                 <div className="flex items-baseline gap-4 border-b border-white/10 pb-4 mb-6">
-                   <span className="text-[var(--color-accent)] font-mono text-sm font-bold tracking-widest uppercase">0{index + 1}</span>
-                   <h3 className="text-3xl font-display font-bold text-white tracking-tight">{section.title.replace(/Scene \d+ — |✨ /g, '')}</h3>
-                 </div>
-                 
-                 {section.subtitle && (
-                   <p className="text-white font-medium text-xl tracking-wide uppercase opacity-90">{section.subtitle}</p>
-                 )}
-                 
-                 {section.content && (
-                   <p className="text-lg text-white/70 leading-relaxed font-light w-full text-justify">
-                     {section.content}
-                   </p>
-                 )}
-
-                 {section.image && (
-                   <div className="mt-8 rounded-xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)]">
-                     <img 
-                       src={section.image} 
-                       alt={section.title} 
-                       className="w-full h-auto object-cover"
-                       referrerPolicy="no-referrer"
-                     />
-                   </div>
-                 )}
-                 
-                 {section.items && (
-                   <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 mt-6">
-                     {section.items.map((item, i) => (
-                       <li key={i} className="flex items-start gap-4 text-white/80 group">
-                         <span className="mt-2 w-1.5 h-1.5 rounded-full bg-white/20 group-hover:bg-[var(--color-accent)] transition-colors shrink-0" />
-                         <span className="leading-relaxed">{item.replace(/^[❌✅📈⚡🎯🔄] /, '')}</span>
-                       </li>
-                     ))}
-                   </ul>
-                 )}
-                 
-                 {section.timelineItems && (
-                   <div className="mt-12 relative border-l-2 border-white/10 ml-6 space-y-16">
-                     {section.timelineItems.map((item, i) => (
-                       <div key={i} className="relative pl-12">
-                         {/* Icon Bubble */}
-                         <div className="absolute -left-[21px] top-0 w-10 h-10 rounded-full bg-[var(--color-accent)] flex items-center justify-center text-black shadow-lg shadow-[var(--color-accent)]/20 z-10">
-                           <item.icon className="w-5 h-5" />
-                         </div>
-                         
-                         {/* Content */}
-                         <div className="space-y-2">
-                           <span className="text-white/40 font-mono text-sm tracking-widest uppercase block mb-1">{item.step}</span>
-                           <h4 className="text-xl font-bold text-white">{item.title}</h4>
-                           <p className="text-white/70 leading-relaxed">{item.description}</p>
-                         </div>
-                       </div>
-                     ))}
-                   </div>
-                 )}
-                 
-                 {section.highlight && (
-                   <div className="mt-8 p-8 bg-white/5 border border-white/10 rounded-xl relative overflow-hidden">
-                     <div className="absolute top-0 left-0 w-1 h-full bg-[var(--color-accent)]" />
-                     <p className="text-2xl text-white font-display font-medium leading-normal tracking-tight">
-                       {section.highlight}
-                     </p>
-                   </div>
-                 )}
-               </div>
+        {[...Array(4)].map((_, i) => (
+          <span key={i} className="inline-flex items-center">
+             {['Product Design', 'SaaS Platforms', 'UX Research', 'Design Systems', 'Freightify', 'Logistics', 'Mobile Apps', 'Branding'].map((text, idx) => (
+               <span key={idx} className="inline-flex items-center mx-[2rem]">
+                 <span className="font-mono text-sm tracking-[0.15em] uppercase text-[var(--color-paper)] opacity-50 mr-[2rem]">{text}</span>
+                 <span className="text-[var(--color-ember)]">✦</span>
+               </span>
              ))}
-          </div>
-          
-          {project.footerImage && (
-            <div className="w-full mt-12">
-              <img 
-                src={project.footerImage} 
-                alt="Project Footer" 
-                className="w-full h-auto object-cover block"
-                referrerPolicy="no-referrer"
-              />
-            </div>
-          )}
-        </div>
+          </span>
+        ))}
       </motion.div>
-    </motion.div>
+    </div>
   );
 };
 
-const ProjectCard: FC<{ project: Project; onClick: () => void }> = ({ project, onClick }) => {
+const Works = ({ onSelectProject }: { onSelectProject: (p: Project) => void }) => {
   return (
-    <motion.div
-      layoutId={`project-${project.id}`}
-      whileHover={{ y: -10 }}
-      onClick={onClick}
-      className={`group relative rounded-2xl overflow-hidden border border-white/10 bg-white/5 ${project.size} cursor-pointer`}
-    >
-      {/* Image Placeholder */}
-      {project.thumbnail ? (
-        <img 
-          src={project.thumbnail} 
-          alt={project.title} 
-          className="w-full h-full absolute inset-0 object-cover object-top opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
-          referrerPolicy="no-referrer"
-        />
-      ) : (
-        <div className={`w-full h-full absolute inset-0 bg-gradient-to-br ${project.image} opacity-80 group-hover:opacity-100 transition-opacity duration-500`} />
-      )}
-      
-      {/* Content Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent p-8 flex flex-col justify-end">
-        <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-          <div className="flex justify-between items-end mb-2">
-            <div>
-              <span className="text-[var(--color-accent)] text-xs font-mono uppercase tracking-wider mb-2 block">{project.category}</span>
-              <h3 className="text-3xl font-display font-bold text-white">{project.title}</h3>
-            </div>
-            <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center group-hover:bg-[var(--color-accent)] transition-colors">
-              <ArrowUpRight className="w-5 h-5 text-white" />
-            </div>
-          </div>
-          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-4">
-             <span className="inline-block px-3 py-1 rounded-full border border-white/20 text-[10px] uppercase tracking-wider text-white/80 backdrop-blur-md">
-               {project.readTime} Read
-             </span>
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
-
-const Works = () => {
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-
-  return (
-    <section id="works" className="py-32 px-6 md:px-20 max-w-[1600px] mx-auto">
-      <AnimatePresence>
-        {selectedProject && (
-          <ProjectDetailsModal project={selectedProject} onClose={() => setSelectedProject(null)} />
-        )}
-      </AnimatePresence>
+    <section id="works" className="py-28 px-6 md:px-12 max-w-[1920px] mx-auto">
+      <motion.div 
+         initial={{ opacity: 0, y: 24 }}
+         whileInView={{ opacity: 1, y: 0 }}
+         viewport={{ once: true, margin: "-100px" }}
+         transition={{ duration: 0.7 }}
+         className="flex flex-col md:flex-row md:items-end justify-between mb-16 border-b border-[var(--color-border)] pb-8 gap-4"
+      >
+         <div>
+            <div className="font-mono text-[13px] tracking-[0.2em] uppercase text-[var(--color-ember)] mb-2">Selected Works</div>
+            <h2 className="font-display text-[2.5rem] md:text-[4.5rem] leading-none tracking-[-0.02em]">Case Studies</h2>
+         </div>
+         <a href="#" className="font-mono text-sm tracking-[0.12em] uppercase text-[var(--color-muted)] hover:text-[var(--color-ember)] group flex items-center gap-2 transition-colors hover-target pb-2">
+            View all projects <span className="text-base group-hover:translate-x-1 transition-transform">→</span>
+         </a>
+      </motion.div>
 
       <motion.div 
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.8 }}
-        className="mb-16 flex items-end justify-between"
+         initial={{ opacity: 0, y: 24 }}
+         whileInView={{ opacity: 1, y: 0 }}
+         viewport={{ once: true, margin: "-100px" }}
+         transition={{ duration: 0.7, delay: 0.1 }}
+         className="flex flex-col gap-10"
       >
-        <div>
-          <h2 className="text-5xl md:text-6xl font-display font-bold mb-4">Selected Works</h2>
-          <div className="h-1 w-24 bg-[var(--color-accent)]" />
-        </div>
-        <a href="#" className="hidden md:flex items-center gap-2 text-white/60 hover:text-white transition-colors">
-          View All Projects <ArrowUpRight className="w-4 h-4" />
-        </a>
-      </motion.div>
+         {projects.map((project, index) => {
+            let patternClass = "";
+            if (project.id === "booking-module") patternClass = "bg-booking-pattern ";
+            
+              return (
+                <motion.div 
+                  layoutId={`project-${project.id}`}
+                  key={index} 
+                  className="group flex flex-col lg:flex-row bg-[var(--color-paper)] rounded-[2rem] overflow-hidden border border-[var(--color-border)] cursor-pointer hover-target transition-colors hover:shadow-lg" 
+                  onClick={() => onSelectProject(project)}
+                >
+                  {/* Left: Image Container */}
+                  <div className="w-full lg:w-[45%] p-4 md:p-5 bg-[#FaF8FD] shrink-0 flex items-stretch"> 
+                     <div className={"relative w-full h-full min-h-[250px] lg:min-h-[320px] rounded-[1.25rem] overflow-hidden grayscale-[5%] group-hover:grayscale-0 transition-all duration-500 " + patternClass}>
+                       {project.thumbnail ? (
+                         <img src={project.thumbnail} alt={project.title} className={"absolute inset-0 w-full h-full " + (project.thumbnailClass || 'object-cover object-center')} referrerPolicy="no-referrer" />
+                       ) : (
+                         <div className={"absolute inset-0 w-full h-full bg-gradient-to-br " + project.image} />
+                       )}
+                     </div>
+                  </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {projects.map((project, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
-            className={project.size}
-          >
-            <ProjectCard project={project} onClick={() => setSelectedProject(project)} />
-          </motion.div>
-        ))}
-      </div>
+                  {/* Right: Content */}
+                  <div className="w-full lg:w-[55%] p-6 md:p-8 lg:p-10 flex flex-col justify-center">
+                     <h3 className="font-display text-[2rem] md:text-[2.2rem] font-bold text-[var(--color-ink)] leading-[1.1] mb-3">
+                       {project.title.replace(/\\n/g, ' ')}
+                     </h3>
+                     <p className="font-sans text-base text-[#4a4a4a] mb-5 leading-[1.5]">
+                       {project.description || "A comprehensive case study showcasing design problem-solving and systematic approach to complex user experiences."}
+                     </p>
+                     
+                     <div className="flex flex-wrap gap-2 mb-6">
+                        {(project.tags || [project.category, project.year]).map((tag, i) => (
+                           <span key={i} className="px-4 py-1.5 rounded-full border border-[var(--color-border)] text-[0.8rem] font-sans text-[#4a4a4a]">
+                              {tag}
+                           </span>
+                        ))}
+                     </div>
+
+                     {project.keyOutcomes && project.keyOutcomes.length > 0 && (
+                       <div>
+                         <h4 className="font-sans text-base text-[#6b6b6b] font-medium mb-3">Key outcomes</h4>
+                         <div className="flex flex-wrap gap-3">
+                           {project.keyOutcomes.map((outcome, i) => (
+                             <div key={i} className="flex-1 min-w-[120px] px-5 py-4 rounded-xl border border-[var(--color-border)] bg-transparent">
+                               <div className="font-sans text-[1.5rem] font-bold text-[var(--color-ink)] mb-1 leading-none">{outcome.value}</div>
+                               <div className="font-sans text-xs text-[#4a4a4a] mt-1.5 leading-[1.3]">
+                                 {outcome.label} <br/> {outcome.subLabel}
+                               </div>
+                             </div>
+                           ))}
+                         </div>
+                       </div>
+                     )}
+                  </div>
+                </motion.div>
+            );
+         })}
+      </motion.div>
     </section>
   );
 };
 
 const About = () => {
   return (
-    <motion.section 
-      id="about" 
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.8 }}
-      className="py-32 px-6 md:px-20 max-w-[1600px] mx-auto bg-white/5 rounded-3xl border border-white/5 relative overflow-hidden"
-    >
-      {/* Decorative Glow */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[var(--color-accent)]/5 rounded-full blur-[120px] pointer-events-none" />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center relative z-10">
-        <div className="relative">
-          <div className="aspect-[4/5] rounded-2xl overflow-hidden relative z-10 border border-white/10 group">
-             <img 
-               src="https://drive.google.com/thumbnail?id=1RGc0FTSNW6iEOFhA9AFnkj52qyiZl0Ol&sz=w1600" 
-               alt="Varun Portrait" 
-               className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
-               referrerPolicy="no-referrer"
-             />
-             <div className="absolute inset-0 bg-[var(--color-accent)]/10 mix-blend-overlay" />
-          </div>
-          {/* Orange Glow Card Behind */}
-          <div className="absolute -inset-4 bg-gradient-to-tr from-[var(--color-accent)]/20 to-transparent rounded-2xl blur-xl -z-10" />
-        </div>
-
-        <div>
-          <span className="text-[var(--color-accent)] font-mono text-sm uppercase tracking-widest mb-4 block">About Me</span>
-          <h2 className="text-4xl md:text-5xl font-display font-bold mb-8 leading-tight">
-            Design isn't just about how it looks, but how it <span className="text-white/40 italic">feels</span>.
-          </h2>
-          <div className="space-y-6 text-white/70 text-lg font-light leading-relaxed">
-            <p>
-              I used to navigate ships for a living. The merchant navy took me across oceans, and I genuinely loved it — but design kept pulling at me. The interest in art had always been there, and at some point the pull became too strong to ignore. So I made the switch.
-            </p>
-            <p>
-              That was three years ago. Since then I've been designing for SaaS platforms, mobile apps, and brands, and I've found that the shift wasn't as strange as it sounds. Both worlds ask you to pay close attention, think clearly, and get things right.
-            </p>
-            <p>
-              Travelling is still a big part of my life, and so is art — they both feed into how I see and approach design. I'm here to keep growing, and I'm always up for work that challenges me.
-            </p>
-          </div>
-
-          <div className="mt-12 grid grid-cols-2 gap-8">
-            <div>
-              <h4 className="text-white font-bold mb-2">Experience</h4>
-              <p className="text-white/50">3+ Years</p>
-            </div>
-            <div>
-              <h4 className="text-white font-bold mb-2">Projects</h4>
-              <p className="text-white/50">15+ Delivered</p>
-            </div>
-            <div>
-              <h4 className="text-white font-bold mb-2">Focus</h4>
-              <p className="text-white/50">SaaS,Branding, Website </p>
-            </div>
-            <div>
-              <h4 className="text-white font-bold mb-2">Location</h4>
-              <p className="text-white/50">Remote / Worldwide</p>
-            </div>
-          </div>
-        </div>
+    <section id="about" className="grid grid-cols-1 md:grid-cols-2 min-h-[80vh] border-t border-[var(--color-border)]">
+      <div className="bg-[var(--color-ink)] py-24 px-8 md:px-12 flex flex-col justify-center relative overflow-hidden">
+        <div className="absolute -bottom-8 -right-4 font-display text-[9rem] md:text-[15rem] leading-none text-white/[0.03] tracking-tighter pointer-events-none select-none">VARUN</div>
+        
+        <motion.div
+           initial={{ opacity: 0, y: 24 }}
+           whileInView={{ opacity: 1, y: 0 }}
+           viewport={{ once: true, margin: "-100px" }}
+           transition={{ duration: 0.7 }}
+        >
+           <div className="font-mono text-[13px] tracking-[0.2em] uppercase text-[var(--color-ember)] mb-8">About Me</div>
+           <h2 className="font-display text-[2.5rem] lg:text-[3.5rem] leading-[1.1] text-[var(--color-paper)] mb-8">
+             Design isn't just<br />how it looks,<br />but how it <em className="italic text-[var(--color-ember)]">feels.</em>
+           </h2>
+           <div className="font-mono text-base leading-[1.9] text-[rgba(245,240,232,0.55)] max-w-[420px] space-y-4 mb-12">
+             <p>I used to navigate ships for a living. The merchant navy took me across oceans, and I loved it — but design kept pulling at me. The interest in art had always been there, and at some point the pull became too strong to ignore. So I made the switch.</p>
+             <p>That was three years ago. Since then I've been designing for SaaS platforms, mobile apps, and brands — and I've found that both worlds ask you to pay close attention, think clearly, and get things right.</p>
+           </div>
+           
+           <div className="grid grid-cols-2 border border-white/10 mb-12 max-w-[500px]">
+             {[
+               { label: 'Experience', value: '3+ Years' },
+               { label: 'Projects', value: '15+ Delivered' },
+               { 
+                 label: 'Tools', 
+                 value: (
+                   <div className="flex gap-3 items-center mt-1">
+                     <Figma className="w-5 h-5 text-white hover:text-[#0ACF83] transition-colors" />
+                     <div className="bg-[#330000] text-[#FF9A00] font-sans font-bold w-5 h-5 flex items-center justify-center rounded-[3px] text-[9px] border border-[#FF9A00]/30 hover:border-[#FF9A00] transition-colors">Ai</div>
+                     <div className="bg-[#00005C] text-[#9999FF] font-sans font-bold w-5 h-5 flex items-center justify-center rounded-[3px] text-[9px] border border-[#9999FF]/30 hover:border-[#9999FF] transition-colors">Ae</div>
+                     <Framer className="w-5 h-5 text-white hover:text-[#0055FF] transition-colors" />
+                   </div>
+                 )
+               },
+               { label: 'Location', value: 'Remote / India' },
+             ].map((fact, i) => (
+               <div key={i} className={`p-6 border-white/10 ${i % 2 === 0 ? 'border-r' : ''} ${i < 2 ? 'border-b' : ''}`}>
+                 <div className="font-mono text-xs tracking-[0.18em] uppercase text-[rgba(245,240,232,0.4)] mb-2">{fact.label}</div>
+                 <div className="font-sans text-lg font-semibold text-[var(--color-paper)]">{fact.value}</div>
+               </div>
+             ))}
+           </div>
+           
+           <div className="border-l-[3px] border-[var(--color-ember)] p-6 bg-white/5 shrink-0 max-w-[500px]">
+             <p className="font-display italic text-[1.2rem] leading-[1.5] text-[var(--color-paper)]">
+               "Travelling is still a big part of my life, and so is art — they both feed into how I see and approach design."
+             </p>
+           </div>
+        </motion.div>
       </div>
-    </motion.section>
+
+      <div className="bg-[var(--color-paper2)] relative overflow-hidden h-[60vh] md:h-auto">
+        <motion.img 
+          initial={{ opacity: 0, scale: 1.05 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          src="https://drive.google.com/thumbnail?id=1trdva4NArRtmBllFDkfJ5fRydnVsuzF5&sz=w1600" 
+          alt="Varun" 
+          className="absolute inset-0 w-full h-full object-cover" 
+          referrerPolicy="no-referrer"
+        />
+      </div>
+    </section>
   );
 };
 
-const FAQItem: FC<{ question: string; answer: string }> = ({ question, answer }) => {
+const FAQItem = ({ question, answer }: { question: string; answer: string }) => {
   const [isOpen, setIsOpen] = useState(false);
-
   return (
-    <div className="border-b border-white/10">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full py-8 flex justify-between items-center text-left hover:text-[var(--color-accent)] transition-colors group"
-      >
-        <span className="text-xl md:text-2xl font-display font-medium">{question}</span>
-        <span className={`p-2 rounded-full border border-white/10 group-hover:border-[var(--color-accent)] transition-all ${isOpen ? 'rotate-180 bg-white/5' : ''}`}>
-          <ChevronDown className="w-5 h-5" />
-        </span>
-      </button>
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden"
-          >
-            <p className="pb-8 text-white/60 leading-relaxed max-w-3xl">
-              {answer}
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+    <div className="border-b border-white/[0.06] flex flex-col hover-target cursor-pointer group" onClick={() => setIsOpen(!isOpen)}>
+      <div className="flex items-start gap-4 py-5 md:py-6">
+        <div className="font-mono text-[13px] text-white/20 mt-[3px] shrink-0 group-hover:text-[var(--color-ember)] transition-colors">{isOpen ? '▼' : '▶'}</div>
+        <div className="flex-1">
+          <h3 className="font-sans text-base font-semibold text-white/35 group-hover:text-[var(--color-paper)] transition-colors data-[open=true]:text-[var(--color-paper)]" data-open={isOpen}>{question}</h3>
+          <AnimatePresence>
+            {isOpen && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="font-mono text-base leading-[1.9] text-[rgba(245,240,232,0.5)] mt-4 max-w-3xl pb-2 whitespace-pre-wrap">
+                  {answer}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
     </div>
   );
 };
 
-const FAQ = () => {
-  const faqs = [
-    {
-      question: "What is your design process?",
-      answer: "I start with understanding the problem — talking to stakeholders, reviewing existing data, and identifying what's actually broken before touching any design tool. From there I move into structure: flows, wireframes, and information architecture. Once the logic is solid, I refine the visual layer and prototype for testing. Every decision ties back to user needs and business goals. No decoration for decoration's sake."
-    },
-    {
-      question: "Do you take freelance projects?",
-      answer: "Selectively. I take on projects where I can add real value — typically early-stage products, redesigns with clear scope, or teams that need a senior design perspective without a full-time hire. If the problem is interesting and the collaboration looks right, let's talk."
-    },
-    {
-      question: "How do you use AI in your design process?",
-      answer: "As a thinking tool, not a shortcut. I use AI early in the process — to pressure-test ideas, explore directions quickly, and shape the narrative around a design through better copy and content framing. It speeds up the messy front-end work so I can spend more time on decisions that actually require design judgment."
-    },
-    {
-      question: "Can you work with development teams?",
-      answer: "Yes, and I prefer it. Good design falls apart without a solid handoff. I work closely with developers from early on — using their constraints to sharpen decisions, not fight them. I deliver production-ready specs, stay available during build, and QA the final output."
-    },
-    {
-      question: "What industries have you worked in?",
-      answer: "Primarily tech — SaaS, consumer apps, and B2B products. I've also worked across fintech, e-commerce, and healthcare-adjacent products. The through-line is always complex systems that need to feel simple to the end user."
-    }
-  ];
-
+const FAQSection = () => {
   return (
-    <section className="py-32 px-6 max-w-4xl mx-auto">
-      <motion.div 
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="text-center mb-16"
-      >
-        <span className="text-[var(--color-accent)] font-mono text-sm uppercase tracking-widest mb-4 block">FAQ</span>
-        <h2 className="text-4xl md:text-5xl font-display font-bold">Common Questions</h2>
-      </motion.div>
+    <section className="bg-[var(--color-ink)] px-6 md:px-12 py-28 border-t border-white/[0.08]">
+      <div className="max-w-[1920px] mx-auto">
+        <motion.div 
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.7 }}
+          className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b border-white/[0.08] pb-8 gap-4"
+        >
+          <div>
+            <div className="font-mono text-[13px] tracking-[0.2em] uppercase text-[var(--color-ember)] mb-2">Common Questions</div>
+            <h2 className="font-display text-[2.5rem] md:text-[4.5rem] leading-none tracking-[-0.02em] text-[var(--color-paper)]">FAQ</h2>
+          </div>
+        </motion.div>
 
-      <div className="space-y-2">
-        {faqs.map((faq, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
-          >
-            <FAQItem {...faq} />
-          </motion.div>
-        ))}
+        <motion.div
+           initial={{ opacity: 0, y: 24 }}
+           whileInView={{ opacity: 1, y: 0 }}
+           viewport={{ once: true, margin: "-50px" }}
+           transition={{ duration: 0.7, delay: 0.1 }}
+        >
+           {faqs.map((faq, index) => (
+             <FAQItem key={index} question={faq.question} answer={faq.answer} />
+           ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+const Contact = () => {
+  return (
+    <section id="contact" className="grid grid-cols-1 md:grid-cols-2 py-28 px-6 md:px-12 border-t border-[var(--color-border)] max-w-[1920px] mx-auto bg-[var(--color-paper)] z-10 relative">
+      <div className="md:pr-20 mb-16 md:mb-0">
+        <motion.div
+           initial={{ opacity: 0, y: 24 }}
+           whileInView={{ opacity: 1, y: 0 }}
+           viewport={{ once: true, margin: "-100px" }}
+           transition={{ duration: 0.7 }}
+        >
+           <div className="font-mono text-[13px] tracking-[0.2em] uppercase text-[var(--color-ember)] mb-8">Get in Touch</div>
+           <h2 className="font-display text-[3rem] sm:text-[6vw] md:text-[5.5rem] leading-[0.95] tracking-[-0.02em] mb-8 text-[var(--color-ink)]">
+             Let's build<br />something <em className="italic text-[var(--color-ember)]">great.</em>
+           </h2>
+           <p className="font-mono text-base leading-[1.8] text-[var(--color-muted)] max-w-[340px] mb-12 md:mb-0">
+             Open to full-time roles, freelance projects, and collaborations. I design clean, purposeful experiences — if that resonates, let's talk.
+           </p>
+        </motion.div>
+      </div>
+      
+      <div className="md:pl-20 border-t md:border-t-0 md:border-l border-[var(--color-border)] flex flex-col justify-center">
+        <motion.div
+           initial={{ opacity: 0, y: 24 }}
+           whileInView={{ opacity: 1, y: 0 }}
+           viewport={{ once: true, margin: "-100px" }}
+           transition={{ duration: 0.7, delay: 0.2 }}
+           className="flex flex-col"
+        >
+          {[
+            { name: "Email", handle: "rajeevanvarun57@gmail.com", href: "mailto:rajeevanvarun57@gmail.com" },
+            { name: "LinkedIn", handle: "@varun-rajeevan-5b5483169", href: "https://www.linkedin.com/in/varun-rajeevan-5b5483169/" },
+            { name: "Instagram", handle: "@ivarunrag1", href: "https://instagram.com/ivarunrag1" },
+            { name: "Behance", handle: "@varun", href: "#" },
+            { name: "Resume", handle: "Download PDF", href: "https://drive.google.com/uc?export=download&id=1NYNGvvaH1xLprt30l1Q9eDL0ei8ZMXLE" },
+          ].map((link, i) => (
+            <a key={i} href={link.href} className="group py-5 border-b border-[var(--color-border)] flex items-center justify-between hover:text-[var(--color-ember)] transition-colors first:border-t hover-target">
+              <div>
+                <div className="font-sans text-lg font-semibold text-[var(--color-ink)] group-hover:text-[var(--color-ember)] transition-colors">{link.name}</div>
+                <div className="font-mono text-sm text-[var(--color-muted)] mt-[2px]">{link.handle}</div>
+              </div>
+              <div className="text-xl text-[var(--color-ember)] group-hover:translate-x-1 transition-transform">
+                {link.name === "Resume" ? "↓" : "→"}
+              </div>
+            </a>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
@@ -1144,84 +893,235 @@ const FAQ = () => {
 
 const Footer = () => {
   return (
-    <footer id="contact" className="pt-32 pb-12 px-6 md:px-20 bg-black border-t border-white/10">
-      <div className="max-w-[1600px] mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 mb-24">
-          <div>
-            <h2 className="text-6xl md:text-8xl font-display font-bold mb-8 leading-none">
-              LET'S WORK <br /> <span className="text-white/20">TOGETHER</span>
-            </h2>
-            <p className="text-white/60 text-xl max-w-md">
-              Have a project in mind? Let's create something extraordinary.
-            </p>
-          </div>
-
-          <div className="flex flex-col justify-end items-start md:items-end gap-8">
-            <a href="mailto:rajeevanvarun57@gmail.com" className="flex items-center gap-4 text-2xl hover:text-[var(--color-accent)] transition-colors group">
-              <Mail className="w-6 h-6 group-hover:scale-110 transition-transform" />
-              rajeevanvarun57@gmail.com
-            </a>
-            <a href="tel:+917010963989" className="flex items-center gap-4 text-2xl hover:text-[var(--color-accent)] transition-colors group">
-              <Phone className="w-6 h-6 group-hover:scale-110 transition-transform" />
-              +91 7010963989
-            </a>
-          </div>
-        </div>
-
-        <div className="h-px w-full bg-white/10 mb-12" />
-
-        <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="flex gap-8">
-            {['Home', 'About', 'Works', 'Contact'].map((item) => (
-              <a key={item} href={`#${item.toLowerCase()}`} className="text-sm text-white/50 hover:text-white transition-colors uppercase tracking-wider">
-                {item}
-              </a>
-            ))}
-          </div>
-
-          <div className="flex gap-6">
-            {[
-              { icon: Twitter, href: '#' },
-              { icon: Linkedin, href: '#' },
-              { icon: Dribbble, href: '#' }
-            ].map((social, index) => (
-              <a
-                key={index}
-                href={social.href}
-                className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-all duration-300"
-              >
-                <social.icon className="w-4 h-4" />
-              </a>
-            ))}
-          </div>
-
-          <p className="text-white/30 text-xs">
-            © {new Date().getFullYear()} Varun. All rights reserved.
-          </p>
-        </div>
+    <footer className="bg-[var(--color-ink)] py-8 px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6 z-10 relative">
+      <div className="font-sans font-extrabold text-base text-[var(--color-paper)] tracking-[-0.01em]">
+        VARUN<span className="text-[var(--color-ember)]">.</span>
+      </div>
+      <div className="font-mono text-[13px] tracking-[0.1em] text-[rgba(245,240,232,0.3)] uppercase">
+        © {new Date().getFullYear()} Varun — All rights reserved
+      </div>
+      <div className="font-mono text-[13px] tracking-[0.1em] text-[rgba(245,240,232,0.3)] uppercase flex items-center gap-2">
+        <span className="text-[var(--color-ember)] text-[0.5rem]">◉</span> Chennai, India
       </div>
     </footer>
   );
 };
 
-export default function App() {
+const ProjectDetailsModal = ({ project, onClose, onNextProject }: { project: Project; onClose: () => void; onNextProject: () => void }) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, []);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = 0;
+    }
+  }, [project.id]);
+
   return (
-    <div className="bg-[var(--color-dark)] min-h-screen text-white selection:bg-[var(--color-accent)] selection:text-white">
-      <div className="noise-overlay" />
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[100] bg-[var(--color-paper)] overflow-hidden flex flex-col"
+    >
+      <motion.div
+        layoutId={`project-${project.id}`}
+        className="relative w-full h-full flex flex-col overflow-hidden"
+      >
+        <div className="absolute top-0 left-0 right-0 z-30 p-6 md:p-8 flex items-center justify-between pointer-events-none">
+          <button 
+            onClick={onClose}
+            className="flex items-center gap-2 px-6 py-3 rounded-full bg-[var(--color-paper)]/90 backdrop-blur-md border border-[var(--color-border)] text-[var(--color-ink)] hover:bg-[var(--color-ember)] hover:border-[var(--color-ember)] hover:text-white transition-colors pointer-events-auto hover-target group font-mono text-xs tracking-widest uppercase"
+          >
+            <span className="group-hover:-translate-x-1 transition-transform">←</span> Back to Works
+          </button>
+          
+          <div className="flex gap-4 pointer-events-auto">
+            <button 
+              onClick={onNextProject}
+              className="flex items-center gap-2 px-6 py-3 rounded-full bg-[var(--color-paper)]/90 backdrop-blur-md border border-[var(--color-border)] text-[var(--color-ink)] hover:bg-[var(--color-ember)] hover:border-[var(--color-ember)] hover:text-white transition-colors hover-target group font-mono text-xs tracking-widest uppercase"
+            >
+              Next Project <span className="group-hover:translate-x-1 transition-transform">→</span>
+            </button>
+          </div>
+        </div>
+
+        <div ref={scrollRef} className="flex-1 overflow-y-auto custom-scrollbar flex flex-col relative">
+          <div className="w-full relative shrink-0 overflow-hidden border-b border-[var(--color-border)] min-h-[35vh] flex flex-col justify-end">
+             {project.thumbnail ? (
+               <img src={project.thumbnail} alt={project.title} className="absolute inset-0 w-full h-full object-cover grayscale-[10%]" referrerPolicy="no-referrer" />
+             ) : (
+               <div className={`absolute inset-0 bg-gradient-to-br ${project.image}`} />
+             )}
+             <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-paper)] via-[var(--color-paper)]/70 to-transparent opacity-90" />
+             <div className="relative z-10 w-full px-[40px] pb-[40px] pt-32 flex flex-col justify-end">
+                <span className="text-[var(--color-ember)] font-mono text-[13px] uppercase tracking-[0.2em] mb-3 block">{project.category}</span>
+                <h2 className="text-3xl md:text-[4rem] font-display text-[var(--color-ink)] leading-[1.05] mb-6">{project.title}</h2>
+                <div className="flex flex-wrap gap-4">
+                   <span className="font-mono text-[13px] tracking-[0.1em] uppercase text-[var(--color-muted)]">Year: {project.year}</span>
+                   <span className="font-mono text-[13px] tracking-[0.1em] uppercase text-[var(--color-muted)]">Role: {project.role}</span>
+                   <span className="font-mono text-[13px] tracking-[0.1em] uppercase text-[var(--color-muted)]">Client: {project.client}</span>
+                </div>
+             </div>
+          </div>
+
+          <div className="px-[40px] py-[40px] max-w-full mx-auto space-y-16 w-full">
+             {project.sections.map((section, index) => (
+               <div key={index} className="space-y-6">
+                 <div className="flex items-start gap-6 border-b border-[var(--color-border)] pb-6 mb-8">
+                   <span className="text-[var(--color-ember)]/50 font-mono text-[13px] mt-[0.6rem]">0{index + 1}</span>
+                   <h3 className="text-2xl md:text-[2rem] font-display text-[var(--color-ink)] tracking-[-0.01em] italic leading-tight">
+                     {section.title.replace(/Scene \d+ — |✨ /, '')}
+                   </h3>
+                 </div>
+                 
+                 {section.subtitle && (
+                   <p className="text-[var(--color-ember)] font-mono font-medium text-sm tracking-[0.1em] uppercase">{section.subtitle}</p>
+                 )}
+                 
+                 {section.content && (
+                   <p className="font-mono text-base text-[var(--color-muted)] leading-[1.9] max-w-full whitespace-pre-wrap">
+                     {section.content}
+                   </p>
+                 )}
+
+                 {section.highlight && (
+                   <div className="mt-8 bg-[var(--color-ink)] rounded-[1.5rem] p-8 md:p-12">
+                     <p className="font-sans text-xl md:text-2xl text-[var(--color-paper)] leading-[1.6]">
+                       {section.highlight}
+                     </p>
+                   </div>
+                 )}
+
+                 {section.image && (
+                   <div className="mt-8 overflow-hidden border border-[var(--color-border)]">
+                     <img src={section.image} alt={section.title} className="w-full h-auto object-cover grayscale-[10%]" referrerPolicy="no-referrer" />
+                   </div>
+                 )}
+                 
+                 {section.metrics && (
+                   <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 ${section.metrics.length === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3'} gap-6 mt-12 mb-8 w-full`}>
+                     {section.metrics.map((metric, i) => (
+                       <div key={i} className="flex-1 px-8 py-10 rounded-[2rem] border border-[var(--color-border)] bg-[var(--color-paper)] relative overflow-hidden group">
+                         <div className="absolute top-0 right-0 p-6 opacity-5 border-l border-b border-[var(--color-border)] rounded-bl-[2rem] bg-white group-hover:bg-[var(--color-ember)] group-hover:opacity-10 transition-colors">
+                           <BarChart2 className="w-12 h-12" />
+                         </div>
+                         <div className="font-sans text-[3.5rem] md:text-[4rem] font-bold text-[var(--color-ink)] mb-2 leading-none tracking-tight group-hover:text-[var(--color-ember)] transition-colors">{metric.value}</div>
+                         <div className="font-sans text-lg text-[#4a4a4a] leading-[1.4] font-medium">
+                           {metric.label} <br/> <span className="text-[#888] font-normal">{metric.subLabel}</span>
+                         </div>
+                       </div>
+                     ))}
+                   </div>
+                 )}
+
+                 {section.items && (
+                   <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 mt-8 bg-[var(--color-paper2)] p-8 border border-[var(--color-border)]">
+                     {section.items.map((item, i) => (
+                       <li key={i} className="flex items-start gap-4 text-[var(--color-ink)] group">
+                         <span className="mt-[0.6rem] w-1 h-1 bg-[var(--color-ember)] shrink-0" />
+                         <span className="font-mono text-base leading-[1.8]">{item.replace(/^[❌✅📈⚡🎯🔄] /u, '')}</span>
+                       </li>
+                     ))}
+                   </ul>
+                 )}
+                 
+                 {section.timelineItems && (
+                   <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mt-12 mb-8">
+                     {section.timelineItems.map((item, i) => (
+                       <div key={i} className="flex flex-col relative group">
+                         <div className="h-[2px] w-full bg-[var(--color-border)] absolute top-[11px] left-0 md:block hidden" />
+                         <div className="w-[24px] h-[24px] rounded-full bg-[var(--color-paper)] border-2 border-[var(--color-ember)] relative z-10 mb-6 flex items-center justify-center">
+                           <div className="w-[8px] h-[8px] rounded-full bg-[var(--color-ember)]" />
+                         </div>
+                         <div>
+                           <div className="font-mono text-[13px] text-[var(--color-ember)] mb-1">STEP {item.step}</div>
+                           <h4 className="font-sans font-semibold text-base text-[var(--color-ink)] mb-2 inline-flex items-center gap-2">
+                             <item.icon className="w-4 h-4 text-[var(--color-ember)]" />
+                             {item.title}
+                           </h4>
+                           {item.subtitle && (
+                             <p className="font-sans font-medium text-sm text-[var(--color-muted)] mb-2">{item.subtitle}</p>
+                           )}
+                           <p className="font-mono text-base leading-[1.8] text-[var(--color-muted)] max-w-full">{item.description}</p>
+                         </div>
+                       </div>
+                     ))}
+                   </div>
+                 )}
+               </div>
+             ))}
+          </div>
+          
+          <div className="mt-auto border-t border-[var(--color-border)] w-full">
+            {project.footerImage ? (
+                <div className="w-full">
+                    <img src={project.footerImage} alt={`${project.title} footer`} className="w-full h-auto object-cover grayscale-[10%]" referrerPolicy="no-referrer" />
+                </div>
+            ) : (
+                <div className={`w-full h-[40vh] bg-gradient-to-br ${project.image} opacity-80`} />
+            )}
+            <div className="w-full bg-[var(--color-ink)] py-16 flex items-center justify-center">
+              <div className="text-center">
+                 <div className="font-mono text-[13px] tracking-[0.2em] uppercase text-[var(--color-ember)] mb-4">Thanks for scrolling</div>
+                 <h2 className="font-display text-[2.5rem] text-[var(--color-paper)] leading-none">— The End</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+export default function App() {
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
+  // Restore scroll position logic
+  useEffect(() => {
+    if (selectedProject) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+      // For some reason, motion's layoutId can sometimes jump the scroll back to top.
+      // In a real app we might handle preserving scroll correctly but here just unlocking is enough
+    }
+  }, [selectedProject]);
+
+  return (
+    <div className="min-h-screen bg-[var(--color-paper)] selection:bg-[var(--color-ember)] selection:text-white font-sans text-[var(--color-ink)] overflow-x-hidden relative max-w-[2560px] mx-auto">
       <CustomCursor />
       <Navbar />
       
       <main>
         <Hero />
-        <div className="h-px bg-white/5 w-full max-w-[1600px] mx-auto" />
-        <Works />
-        <div className="h-px bg-white/5 w-full max-w-[1600px] mx-auto" />
+        <Marquee />
+        <Works onSelectProject={setSelectedProject} />
         <About />
-        <div className="h-px bg-white/5 w-full max-w-[1600px] mx-auto" />
-        <FAQ />
+        <FAQSection />
+        <Contact />
       </main>
 
       <Footer />
+
+      <AnimatePresence mode="wait">
+        {selectedProject && (
+          <ProjectDetailsModal 
+            key={selectedProject.id}
+            project={selectedProject} 
+            onClose={() => setSelectedProject(null)} 
+            onNextProject={() => {
+              const currentIndex = projects.findIndex(p => p.id === selectedProject.id);
+              const nextIndex = (currentIndex + 1) % projects.length;
+              setSelectedProject(projects[nextIndex]);
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

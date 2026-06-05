@@ -1,5 +1,6 @@
 {
   "name": "Varun Portfolio",
-  "description": "A cinematic, high-end personal portfolio for Product Designer Varun.",
-  "requestFramePermissions": []
+  "description": "Portfolio of Varun, a Senior Product Designer.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
