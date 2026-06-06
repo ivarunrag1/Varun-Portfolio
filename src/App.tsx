@@ -40,7 +40,7 @@ const projects: Project[] = [
     title: "Revamping the Booking Module",
     category: "SaaS Logistics Platform",
     image: "from-blue-900 to-slate-900",
-    thumbnail: "https://drive.google.com/thumbnail?id=1RlrgP4tJl2Cjsapbxt5erX_TwP3sMbtJ&sz=w1600",
+    thumbnail: "https://drive.google.com/thumbnail?id=1Swa6Puhg0tBThMSO2GERkZmQz4JSxwt9&sz=w1600",
     size: "col-span-1 md:col-span-1 h-[500px]",
     readTime: "5 min",
     year: "2025",
