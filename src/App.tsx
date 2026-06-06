@@ -427,46 +427,48 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-6 mix-blend-multiply pointer-events-none">
-      <a href="#" className="font-sans font-extrabold text-xl tracking-tight text-[var(--color-ink)] pointer-events-auto hover-target">
-        VARUN<span className="text-[var(--color-ember)]">.</span>
-      </a>
+    <nav className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-6 pointer-events-none transition-all duration-300 ${isMobileMenuOpen ? 'mix-blend-normal' : 'mix-blend-multiply'}`}>
+      <div className="flex items-center justify-between w-full">
+        <a href="#" className="font-sans font-extrabold text-xl tracking-tight text-[var(--color-ink)] pointer-events-auto hover-target relative z-50">
+          VARUN<span className="text-[var(--color-ember)]">.</span>
+        </a>
 
-      {/* Desktop Nav */}
-      <ul className="hidden md:flex items-center gap-10 pointer-events-auto">
-        {navLinks.map((link) => (
-          <li key={link.name}>
-            <a href={link.href} className="font-mono text-sm tracking-[0.12em] uppercase text-[var(--color-muted)] hover:text-[var(--color-ember)] hover-target transition-colors">
-              {link.name}
+        {/* Desktop Nav */}
+        <ul className="hidden md:flex items-center gap-10 pointer-events-auto">
+          {navLinks.map((link) => (
+            <li key={link.name}>
+              <a href={link.href} className="font-mono text-sm tracking-[0.12em] uppercase text-[var(--color-muted)] hover:text-[var(--color-ember)] hover-target transition-colors">
+                {link.name}
+              </a>
+            </li>
+          ))}
+          <li>
+            <a
+              href="https://drive.google.com/uc?export=download&id=1NYNGvvaH1xLprt30l1Q9eDL0ei8ZMXLE"
+              className="font-mono text-sm tracking-[0.1em] uppercase bg-[var(--color-ink)] text-[var(--color-paper)] px-5 py-2.5 hover:bg-[var(--color-ember)] hover:text-white transition-colors hover-target"
+            >
+              Resume ↓
             </a>
           </li>
-        ))}
-        <li>
-          <a
-            href="https://drive.google.com/uc?export=download&id=1NYNGvvaH1xLprt30l1Q9eDL0ei8ZMXLE"
-            className="font-mono text-sm tracking-[0.1em] uppercase bg-[var(--color-ink)] text-[var(--color-paper)] px-5 py-2.5 hover:bg-[var(--color-ember)] hover:text-white transition-colors hover-target"
-          >
-            Resume ↓
-          </a>
-        </li>
-      </ul>
+        </ul>
 
-      {/* Mobile Menu Toggle */}
-      <button
-        className="md:hidden text-[var(--color-ink)] z-50 pointer-events-auto"
-        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-      >
-        {isMobileMenuOpen ? <X /> : <Menu />}
-      </button>
+        {/* Mobile Menu Toggle */}
+        <button
+          className="md:hidden text-[var(--color-ink)] z-50 pointer-events-auto relative"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
+          {isMobileMenuOpen ? <X /> : <Menu />}
+        </button>
+      </div>
 
       {/* Mobile Nav Overlay */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 bg-[var(--color-paper)] z-40 flex flex-col items-center justify-center gap-8 md:hidden pointer-events-auto mix-blend-normal"
+            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+            animate={{ opacity: 1, backdropFilter: "blur(12px)" }}
+            exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+            className="fixed inset-0 bg-[var(--color-paper)]/90 z-40 flex flex-col items-center justify-center gap-8 md:hidden pointer-events-auto"
           >
             {navLinks.map((link) => (
               <a
