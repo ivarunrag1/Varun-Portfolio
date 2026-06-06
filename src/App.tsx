@@ -498,6 +498,31 @@ const Hero = () => {
     <section id="hero" className="min-h-screen grid grid-cols-1 md:grid-cols-2 relative overflow-hidden">
       {/* Left */}
       <div className="flex flex-col justify-end pt-32 pb-20 px-6 md:px-12 relative md:border-r border-b md:border-b-0 border-[var(--color-border)]">
+        <div className="absolute top-28 md:top-32 left-6 md:left-12 flex items-center gap-3 z-10">
+          <motion.div
+             initial={{ opacity: 0, scale: 0.9 }}
+             animate={{ opacity: 1, scale: 1 }}
+             transition={{ duration: 0.7, delay: 0.05 }}
+             className="inline-flex items-center gap-3 pl-1.5 pr-4 py-1.5 rounded-full border border-[var(--color-border)] bg-[var(--color-paper)] shadow-sm relative overflow-visible"
+          >
+            <div className="relative isolate">
+              <span className="animate-ping absolute inset-[-2px] rounded-full opacity-50 bg-emerald-400 z-0"></span>
+              <div className="absolute inset-[-1.5px] rounded-full border border-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] z-0"></div>
+              <div className="relative w-8 h-8 rounded-full border-[1.5px] border-[var(--color-paper)] overflow-hidden bg-zinc-100 shadow-sm shrink-0 z-10">
+                 <img src="https://drive.google.com/thumbnail?id=1trdva4NArRtmBllFDkfJ5fRydnVsuzF5&sz=w200" alt="Varun" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+              </div>
+              <motion.div 
+                 animate={{ rotate: [0, 15, -10, 15, 0] }}
+                 transition={{ repeat: Infinity, duration: 1.5, repeatDelay: 1.5 }}
+                 className="absolute -right-2 -bottom-1 z-20 bg-[var(--color-paper)] rounded-full text-[10px] shadow-sm border border-[var(--color-border)] w-4 h-4 flex items-center justify-center p-0.5"
+              >
+                 👋
+              </motion.div>
+            </div>
+            <span className="font-mono text-[10px] tracking-widest uppercase text-[var(--color-ink)] font-semibold mt-0.5">Available for work</span>
+          </motion.div>
+        </div>
+
         <motion.div
            initial={{ opacity: 0, y: 24 }}
            animate={{ opacity: 1, y: 0 }}
