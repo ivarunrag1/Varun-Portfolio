@@ -495,9 +495,9 @@ const Navbar = () => {
 
 const Hero = () => {
   return (
-    <section id="hero" className="min-h-screen grid grid-cols-1 md:grid-cols-2 relative overflow-hidden">
+    <section id="hero" className="min-h-[100dvh] md:h-[100dvh] grid grid-cols-1 md:grid-cols-2 relative overflow-hidden">
       {/* Left */}
-      <div className="flex flex-col justify-end pt-32 pb-20 px-6 md:px-12 relative md:border-r border-b md:border-b-0 border-[var(--color-border)]">
+      <div className="flex flex-col justify-end pt-40 md:pt-32 pb-16 px-6 md:px-12 relative md:border-r border-b md:border-b-0 border-[var(--color-border)] md:overflow-y-auto">
         <div className="absolute top-28 md:top-32 left-6 md:left-12 flex items-center gap-3 z-10">
           <motion.div
              initial={{ opacity: 0, scale: 0.9 }}
@@ -552,19 +552,19 @@ const Hero = () => {
            initial={{ opacity: 0, y: 24 }}
            animate={{ opacity: 1, y: 0 }}
            transition={{ duration: 0.7, delay: 0.55 }}
-           className="flex flex-wrap gap-4 items-center"
+           className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center w-full"
         >
-           <a href="#works" className="bg-[var(--color-ember)] text-white font-mono text-sm tracking-[0.1em] uppercase px-8 py-4 hover:bg-[var(--color-ink)] hover:-translate-y-0.5 transition-all hover-target inline-block">
+           <a href="#works" className="bg-[var(--color-ember)] text-white font-mono text-sm tracking-[0.1em] uppercase px-8 h-14 flex items-center justify-center hover:bg-[var(--color-ink)] hover:-translate-y-0.5 transition-all hover-target text-center">
              View Works
            </a>
-           <a href="#contact" className="text-[var(--color-ink)] font-mono text-sm tracking-[0.1em] uppercase px-8 py-4 border border-[var(--color-border)] hover:border-[var(--color-ember)] hover:text-[var(--color-ember)] hover:-translate-y-0.5 transition-all hover-target inline-block">
+           <a href="#contact" className="text-[var(--color-ink)] font-mono text-sm tracking-[0.1em] uppercase px-8 h-14 flex items-center justify-center border border-[var(--color-border)] hover:border-[var(--color-ember)] hover:text-[var(--color-ember)] hover:-translate-y-0.5 transition-all hover-target text-center">
              Get in Touch
            </a>
         </motion.div>
       </div>
 
       {/* Right */}
-      <div className="flex flex-col justify-between pt-12 md:pt-32 pb-20 px-6 md:px-12 bg-[var(--color-paper2)]">
+      <div className="flex flex-col justify-between pt-12 md:pt-32 pb-20 px-6 md:px-12 bg-[var(--color-paper2)] md:overflow-y-auto">
         <motion.div
            initial={{ opacity: 0, y: 24 }}
            animate={{ opacity: 1, y: 0 }}
