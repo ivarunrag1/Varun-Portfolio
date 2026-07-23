@@ -13,6 +13,16 @@ type ProjectSection = {
   timelineItems?: { step: string; title: string; subtitle?: string; description: string; icon: React.ElementType }[];
   highlight?: string;
   image?: string;
+  matrix?: {
+    quadrants: {
+      label: string;
+      impact: 'High' | 'Low';
+      effort: 'High' | 'Low';
+      verb: string;
+      tone: 'win' | 'core' | 'muted' | 'avoid';
+      items: { name: string; deferred?: boolean }[];
+    }[];
+  };
 };
 
 type Project = {
@@ -77,13 +87,56 @@ const projects: Project[] = [
       {
         title: "Deciding What Not To Build",
         subtitle: "An impact-versus-effort pass to keep the first version sharp",
-        content: "With the problem framed, the temptation was to build everything — summaries, drafting, risk scoring, forecasting, dashboards. I ran every idea through an impact-versus-effort lens to separate the first version from the wishlist.",
-        items: [
-          "Quick wins — call summaries, follow-up generation, repetitive documentation",
-          "Major projects — CRM auto-draft, deal-risk detection, manager visibility",
-          "Strategic bets — forecast prediction and deal-health scoring (deferred)",
-          "Deliberately avoided — advanced reporting and analytics dashboards"
-        ],
+        content: "With the problem framed, the temptation was to build everything — summaries, drafting, risk scoring, forecasting, dashboards. I ran every idea through an impact-versus-effort lens to separate the first version from the wishlist.\n\nThe quick wins earned their place immediately. The major projects became the MVP. The bigger bets — forecasting and deal-health scoring — were real, but parked for v2. And a whole class of reporting was deliberately left off the board.",
+        matrix: {
+          quadrants: [
+            {
+              label: "Quick Wins",
+              impact: "High",
+              effort: "Low",
+              verb: "Do first",
+              tone: "win",
+              items: [
+                { name: "Call summaries" },
+                { name: "Follow-up generation" },
+                { name: "Repetitive documentation" }
+              ]
+            },
+            {
+              label: "Major Projects",
+              impact: "High",
+              effort: "High",
+              verb: "The MVP",
+              tone: "core",
+              items: [
+                { name: "CRM auto-draft" },
+                { name: "Deal-risk detection" },
+                { name: "Manager visibility" },
+                { name: "Forecast prediction", deferred: true },
+                { name: "Deal-health scoring", deferred: true }
+              ]
+            },
+            {
+              label: "Fill-Ins",
+              impact: "Low",
+              effort: "Low",
+              verb: "Not now",
+              tone: "muted",
+              items: []
+            },
+            {
+              label: "Avoid",
+              impact: "Low",
+              effort: "High",
+              verb: "Skip",
+              tone: "avoid",
+              items: [
+                { name: "Advanced reporting" },
+                { name: "Analytics dashboards" }
+              ]
+            }
+          ]
+        },
         highlight: "The first version had to prove one thing: that the AI could capture and draft accurately enough for a rep to trust it. Forecasting and analytics could wait — they're worthless if the underlying data still isn't being captured."
       },
       {
@@ -1058,6 +1111,53 @@ const Footer = () => {
   );
 };
 
+const ImpactEffortMatrix = ({ quadrants }: { quadrants: NonNullable<ProjectSection['matrix']>['quadrants'] }) => {
+  const T: Record<string, { card: string; title: string; meta: string; verb: string; item: string; dot: string }> = {
+    win:   { card: 'border-[var(--color-ember)]/45 bg-[var(--color-ember)]/[0.05]', title: 'text-[var(--color-ink)]', meta: 'text-[var(--color-ember)]', verb: 'bg-[var(--color-ember)] text-white', item: 'text-[var(--color-ink)]', dot: 'bg-[var(--color-ember)]' },
+    core:  { card: 'border-[var(--color-ink)] bg-[var(--color-ink)]', title: 'text-[var(--color-paper)]', meta: 'text-[var(--color-ember)]', verb: 'bg-[var(--color-ember)] text-white', item: 'text-[rgba(245,240,232,0.82)]', dot: 'bg-[var(--color-ember)]' },
+    muted: { card: 'border-[var(--color-border)] bg-[var(--color-paper2)]', title: 'text-[var(--color-muted)]', meta: 'text-[var(--color-muted)]', verb: 'bg-[var(--color-border)] text-[var(--color-muted)]', item: 'text-[var(--color-muted)]', dot: 'bg-[var(--color-border)]' },
+    avoid: { card: 'border-[var(--color-border)] border-dashed bg-transparent', title: 'text-[var(--color-muted)]', meta: 'text-[var(--color-muted)]', verb: 'border border-[var(--color-border)] text-[var(--color-muted)]', item: 'text-[var(--color-muted)] line-through decoration-[var(--color-border)]', dot: 'bg-[var(--color-border)]' },
+  };
+  return (
+    <div className="flex gap-3 not-italic w-full">
+      <div className="flex items-center shrink-0">
+        <span className="font-mono text-[11px] tracking-[0.15em] uppercase text-[var(--color-muted)] whitespace-nowrap [writing-mode:vertical-rl] rotate-180">Impact →</span>
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="grid grid-cols-2 gap-3">
+          {quadrants.map((q, i) => {
+            const t = T[q.tone] || T.muted;
+            return (
+              <div key={i} className={`rounded-xl border p-5 flex flex-col min-h-[168px] ${t.card}`}>
+                <div className={`font-mono text-[10px] tracking-[0.12em] uppercase mb-2 ${t.meta}`}>{q.impact} impact · {q.effort} effort</div>
+                <div className="flex items-start justify-between gap-2 mb-3">
+                  <h4 className={`font-sans font-bold text-lg leading-tight ${t.title}`}>{q.label}</h4>
+                  <span className={`shrink-0 font-mono text-[9px] tracking-[0.1em] uppercase px-2 py-1 rounded-full ${t.verb}`}>{q.verb}</span>
+                </div>
+                {q.items.length > 0 ? (
+                  <ul className="space-y-1.5 mt-auto">
+                    {q.items.map((it, j) => (
+                      <li key={j} className={`flex items-start gap-2 font-mono text-[13px] leading-snug ${t.item}`}>
+                        <span className={`mt-[7px] w-1 h-1 shrink-0 rounded-full ${t.dot}`} />
+                        <span>{it.name}{it.deferred && <span className="ml-1.5 font-mono text-[9px] tracking-[0.08em] uppercase px-1.5 py-[1px] rounded-full border border-current opacity-60 no-underline">v2</span>}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className={`mt-auto font-mono text-[13px] italic ${t.item}`}>None prioritised here</div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+        <div className="mt-3 text-center">
+          <span className="font-mono text-[11px] tracking-[0.15em] uppercase text-[var(--color-muted)]">Effort →</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const ProjectDetailsModal = ({ project, onClose, onNextProject }: { project: Project; onClose: () => void; onNextProject: () => void }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -1130,14 +1230,30 @@ const ProjectDetailsModal = ({ project, onClose, onNextProject }: { project: Pro
                    </h3>
                  </div>
                  
-                 {section.subtitle && (
-                   <p className="text-[var(--color-ember)] font-mono font-medium text-sm tracking-[0.1em] uppercase">{section.subtitle}</p>
-                 )}
-                 
-                 {section.content && (
-                   <p className="font-mono text-base text-[var(--color-muted)] leading-[1.9] max-w-full whitespace-pre-wrap">
-                     {section.content}
-                   </p>
+                 {section.matrix ? (
+                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+                     <div className="space-y-6">
+                       {section.subtitle && (
+                         <p className="text-[var(--color-ember)] font-mono font-medium text-sm tracking-[0.1em] uppercase">{section.subtitle}</p>
+                       )}
+                       {section.content && (
+                         <p className="font-mono text-base text-[var(--color-muted)] leading-[1.9] max-w-full whitespace-pre-wrap">{section.content}</p>
+                       )}
+                     </div>
+                     <ImpactEffortMatrix quadrants={section.matrix.quadrants} />
+                   </div>
+                 ) : (
+                   <>
+                     {section.subtitle && (
+                       <p className="text-[var(--color-ember)] font-mono font-medium text-sm tracking-[0.1em] uppercase">{section.subtitle}</p>
+                     )}
+
+                     {section.content && (
+                       <p className="font-mono text-base text-[var(--color-muted)] leading-[1.9] max-w-full whitespace-pre-wrap">
+                         {section.content}
+                       </p>
+                     )}
+                   </>
                  )}
 
                  {section.highlight && (
