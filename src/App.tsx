@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useSpring } from 'motion/react';
-import { Menu, X, Search, BarChart2, FileText, Package, Ship, Figma, Framer } from 'lucide-react';
+import { Menu, X, Search, BarChart2, FileText, Package, Ship, Figma, Framer, Phone, Sparkles, ClipboardCheck, LayoutDashboard } from 'lucide-react';
 
 // --- Types & Data ---
 
@@ -35,6 +35,130 @@ type Project = {
 };
 
 const projects: Project[] = [
+  {
+    id: "ai-sales-assistant",
+    title: "Signal — An AI Sales Assistant",
+    category: "AI Product · 0→1 Concept",
+    image: "from-violet-900 to-slate-900",
+    thumbnail: "/projects/ai-sales-assistant/thumbnail.jpg",
+    thumbnailClass: "object-cover object-center",
+    size: "col-span-1 md:col-span-1 h-[500px]",
+    readTime: "6 min",
+    year: "2026",
+    role: "Product Designer",
+    client: "Self-initiated concept",
+    description: "An AI layer for CRM that captures every call, email, and meeting, drafts the CRM entry, and lets reps approve in seconds — cutting manual data entry while giving managers real-time deal visibility.",
+    tags: ["AI", "0→1", "CRM", "B2B SaaS", "Concept"],
+    keyOutcomes: [
+      { value: "70%↓", label: "Manual CRM entry", subLabel: "design target" },
+      { value: "0→1", label: "Concept", subLabel: "end-to-end" },
+      { value: "3", label: "Core solutions", subLabel: "in MVP scope" },
+      { value: "Human", label: "in the loop", subLabel: "approve to sync" }
+    ],
+    sections: [
+      {
+        title: "CRM Admin Is Quietly Breaking Visibility",
+        subtitle: "The work that keeps a pipeline honest is the work reps skip first",
+        content: "Every sales team runs on the same unspoken bargain: reps sell, and in exchange they keep the CRM up to date so managers can see what's actually happening. In practice, the second half of that bargain quietly falls apart.\n\nAfter a call, a rep is supposed to stop, remember what was said, and type it into a dozen CRM fields — stage, value, contacts, objections, next steps. It's tedious, it competes with the next call, and it's the first thing to get dropped on a busy day. So the CRM drifts out of date. And when the manager opens the dashboard to forecast or catch a deal going cold, they're reading data that's days behind reality.\n\nThe system looks like it's working — calls happen, deals get created — but decisions are being made on stale information.",
+        items: [
+          "Reps lose selling time to manual CRM updates after every interaction",
+          "The same information gets documented over and over, by hand",
+          "Insights from calls never make it into the system",
+          "Managers get poor, delayed visibility into deal health",
+          "Risk on stalling deals surfaces too late to act on"
+        ]
+      },
+      {
+        title: "Two People, One Broken Loop",
+        subtitle: "I mapped the workflow from both sides — the rep who feeds the CRM and the manager who reads it",
+        content: "I looked at the workflow from the two people who live inside it. The sales rep wants to spend less time on admin and more time selling — manual documentation is pure overhead to them. The sales manager wants the other side of the same coin: accurate forecasts, early risk signals, and a trustworthy read on deal health.\n\nBoth are failed by the same gap. I traced it with a simple five-whys: manager visibility is poor because the CRM is incomplete; the CRM is incomplete because reps don't update it consistently; and they don't update it consistently because updating it is manual, tedious work done after the moment has already passed.",
+        highlight: "The root cause wasn't lazy reps or a bad CRM. It was that information capture is disconnected from information creation — the data is created live on a call, but captured hours later, from memory, by hand."
+      },
+      {
+        title: "Deciding What Not To Build",
+        subtitle: "An impact-versus-effort pass to keep the first version sharp",
+        content: "With the problem framed, the temptation was to build everything — summaries, drafting, risk scoring, forecasting, dashboards. I ran every idea through an impact-versus-effort lens to separate the first version from the wishlist.",
+        items: [
+          "Quick wins — call summaries, follow-up generation, repetitive documentation",
+          "Major projects — CRM auto-draft, deal-risk detection, manager visibility",
+          "Strategic bets — forecast prediction and deal-health scoring (deferred)",
+          "Deliberately avoided — advanced reporting and analytics dashboards"
+        ],
+        highlight: "The first version had to prove one thing: that the AI could capture and draft accurately enough for a rep to trust it. Forecasting and analytics could wait — they're worthless if the underlying data still isn't being captured."
+      },
+      {
+        title: "The Trade-Off: Automate the Typing, Not the Judgment",
+        subtitle: "Full auto-sync was possible — and exactly the wrong call",
+        content: "The obvious version of this product writes straight to the CRM: the AI hears the call, updates the record, done. It's the most 'automated' — and it's the version reps would never trust. One wrong deal value or misread objection written silently into the system, and they'd switch the whole thing off.\n\nSo I drew the line deliberately. The AI does the tedious ninety percent — listening, summarising, and drafting every field. But nothing reaches the CRM until a human approves it. The rep stays the author of record; the AI just removes the typing.",
+        highlight: "The AI drafts. The rep decides. Nothing syncs to the CRM without an explicit approval — that single constraint is what makes the automation trustworthy instead of scary."
+      },
+      {
+        title: "How It Works",
+        subtitle: "From a live conversation to an approved CRM record in five steps",
+        content: "The redesigned flow moves capture to the moment information is created, and keeps the rep's approval as the one required checkpoint before anything becomes real.",
+        timelineItems: [
+          {
+            step: "01",
+            title: "Capture",
+            subtitle: "Automatically, at the source",
+            description: "Signal captures the call, email, or meeting as it happens — no notes to take. The moment information is created is the moment it's captured.",
+            icon: Phone
+          },
+          {
+            step: "02",
+            title: "Summarise",
+            subtitle: "The conversation, structured",
+            description: "The AI turns a rambling twenty-minute call into the few facts that actually change the deal — what was discussed, what was decided.",
+            icon: Sparkles
+          },
+          {
+            step: "03",
+            title: "Draft",
+            subtitle: "Every CRM field, pre-filled",
+            description: "It drafts the full entry — stage, value, expected close, contacts, primary pain, and next actions — so there's nothing to type from scratch.",
+            icon: FileText
+          },
+          {
+            step: "04",
+            title: "Review & Approve",
+            subtitle: "A 30-second human checkpoint",
+            description: "The rep checks the draft against the transcript, edits anything off, and approves. This is the one required step — the guardrail that keeps the CRM honest.",
+            icon: ClipboardCheck
+          },
+          {
+            step: "05",
+            title: "Sync & Surface",
+            subtitle: "CRM updated, manager informed",
+            description: "On approval the CRM updates instantly, and the manager's dashboard reflects it in real time — surfacing deal health and risk without anyone being asked.",
+            icon: LayoutDashboard
+          }
+        ]
+      },
+      {
+        title: "Capture at the Source",
+        subtitle: "Every call, email, and meeting already logged — nothing relies on memory",
+        content: "The rep opens Signal to a queue of AI drafts — one for every interaction, already summarised and typed as a call, email, or meeting. Instead of a blank CRM form and a fading memory, the work is pre-done and waiting for a glance. Pending drafts are kept clearly separate from approved ones, so it's always obvious what still needs the rep's eyes.",
+        image: "/projects/ai-sales-assistant/drafts-queue.png"
+      },
+      {
+        title: "Review in Thirty Seconds",
+        subtitle: "A 30-second check, not a 10-minute write-up",
+        content: "Opening a draft puts the AI summary and full transcript on one side, and the CRM fields it filled in on the other — deal stage, value, expected close, point of contact, primary pain, and next actions. The rep skims, corrects anything that's off, and hits Approve & Create Deal. The key signals are pulled out on the right so the deciding details are impossible to miss — and the reassurance sits right under the button: nothing syncs to the CRM without approval.",
+        image: "/projects/ai-sales-assistant/review-approve.png"
+      },
+      {
+        title: "Risk, Surfaced Automatically",
+        subtitle: "The manager gets the truth without chasing anyone for it",
+        content: "Because data is now captured the moment it's created, the manager's dashboard finally reflects reality. Pipeline value, win rate, and deal health update in real time, and the system proactively flags deals going cold — 'contract negotiation stalled, consider escalation' — instead of waiting for a weekly review to surface it. The visibility managers always wanted turns out to be a by-product of making capture effortless for the rep.",
+        image: "/projects/ai-sales-assistant/manager-dashboard.png"
+      },
+      {
+        title: "What I Took Away",
+        content: "The instinct with an AI feature is to automate the whole task. The better move here was to automate the part people hate — the typing — and protect the part they need to own: the judgment about what's actually true. Fixing manager visibility never required a better dashboard. It required moving capture to where information is created, and asking the rep for nothing more than a thirty-second yes.",
+        highlight: "Reduce the work, not the responsibility. Signal is designed to cut manual CRM entry by around 70% — not by doing the rep's thinking for them, but by doing everything except the one decision that should stay human."
+      }
+    ]
+  },
   {
     id: "booking-module",
     title: "Revamping the Booking Module",
@@ -1085,12 +1209,10 @@ const ProjectDetailsModal = ({ project, onClose, onNextProject }: { project: Pro
           </div>
           
           <div className="mt-auto border-t border-[var(--color-border)] w-full">
-            {project.footerImage ? (
+            {project.footerImage && (
                 <div className="w-full">
                     <img src={project.footerImage} alt={`${project.title} footer`} className="w-full h-auto object-cover grayscale-[10%]" referrerPolicy="no-referrer" />
                 </div>
-            ) : (
-                <div className={`w-full h-[40vh] bg-gradient-to-br ${project.image} opacity-80`} />
             )}
             <div className="w-full bg-[var(--color-ink)] py-16 flex items-center justify-center">
               <div className="text-center">
