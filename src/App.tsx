@@ -55,7 +55,7 @@ const projects: Project[] = [
     size: "col-span-1 md:col-span-1 h-[500px]",
     readTime: "6 min",
     year: "2026",
-    role: "Product Designer",
+    role: "Senior Product Designer",
     client: "Self-initiated concept",
     description: "An AI layer for CRM that captures every call, email, and meeting, drafts the CRM entry, and lets reps approve in seconds — cutting manual data entry while giving managers real-time deal visibility.",
     tags: ["AI", "0→1", "CRM", "B2B SaaS", "Concept"],
@@ -226,7 +226,7 @@ const projects: Project[] = [
     footerImage: "https://drive.google.com/thumbnail?id=1CcW01psEJN2gnZUY-S9u4C4emgCLvZcC&sz=w1600",
     description: "Simplified the logistics booking process by turning a fragmented manual workflow into a cohesive, 2-step guided experience.",
     tags: ["B2B", "SaaS", "Logistics", "UX Redesign"],
-    keyOutcomes: [{ value: "40%↑", label: "Task completion", subLabel: "efficiency" }, { value: "50%↑", label: "Faster booking", subLabel: "via TMS" }, { value: "1-Click", label: "Seamless sync", subLabel: "& integration" }],
+    keyOutcomes: [{ value: "~40%↑", label: "Task completion", subLabel: "projected, 2-step flow" }, { value: "~50%↑", label: "Faster booking", subLabel: "projected via TMS sync" }, { value: "1-Click", label: "Sync to TMS", subLabel: "no manual re-entry" }],
     sections: [
       {
         title: "Scene 1 — The Friction",
@@ -256,12 +256,12 @@ const projects: Project[] = [
         ]
       },
       {
-        title: "Scene 4 — The Impact",
-        content: "The results weren’t subtle.",
+        title: "Scene 4 — The Projected Impact",
+        content: "These are design projections — modeled from the manual steps the redesign removes, not post-launch measurements.",
         metrics: [
-          { value: "40%↑", label: "Task completion", subLabel: "efficiency" },
-          { value: "50%↑", label: "Faster booking", subLabel: "via TMS integration" },
-          { value: "1-Click", label: "Seamless sync", subLabel: "& integration" }
+          { value: "~40%↑", label: "Task completion", subLabel: "projected, 2-step flow" },
+          { value: "~50%↑", label: "Faster booking", subLabel: "projected via TMS sync" },
+          { value: "1-Click", label: "Sync to TMS", subLabel: "no manual re-entry" }
         ],
         items: [
           "🎯 Reduced onboarding friction for new users",
@@ -290,10 +290,10 @@ const projects: Project[] = [
     description: "Connected severed workflows by turning a dead-end help desk feature into an actionable bridge for rate negotiation and booking.",
     tags: ["B2B", "Web App", "Workflow", "0→1"],
     keyOutcomes: [
-      { value: "~22%↓", label: "Duplicate", subLabel: "rate searches" },
-      { value: "73%", label: "Adoption rate", subLabel: "among active users" },
+      { value: "~22%↓", label: "Duplicate searches", subLabel: "projected" },
+      { value: "73%", label: "Adoption target", subLabel: "among active users" },
       { value: "12", label: "User interviews", subLabel: "across 4 roles" },
-      { value: "100%", label: "Search-to-quote", subLabel: "conversion trackable" }
+      { value: "End-to-end", label: "Search → booking", subLabel: "now one flow" }
     ],
     sections: [
       {
@@ -335,10 +335,10 @@ const projects: Project[] = [
         title: "The Impact",
         content: "By bridging the gap between enquiry and booking, we turned a dead-end feature into a continuous workflow.",
         metrics: [
-          { value: "~22%↓", label: "Duplicate", subLabel: "rate searches" },
-          { value: "73%", label: "Adoption rate", subLabel: "among active users" },
+          { value: "~22%↓", label: "Duplicate searches", subLabel: "projected" },
+          { value: "73%", label: "Adoption target", subLabel: "among active users" },
           { value: "12", label: "User interviews", subLabel: "across 4 roles" },
-          { value: "100%", label: "Search-to-quote", subLabel: "conversion trackable" }
+          { value: "End-to-end", label: "Search → booking", subLabel: "now one flow" }
         ]
       },
       {
@@ -394,12 +394,12 @@ const projects: Project[] = [
     size: "col-span-1 md:col-span-1 h-[500px]",
     readTime: "5 min",
     year: "2024",
-    role: "Product Designer",
+    role: "Junior Product Designer",
     client: "Freightify",
     footerImage: "https://drive.google.com/thumbnail?id=1jUvXFHPE0yQKwI5pzcpOO_pl2j5Sp_nG&sz=w1600",
     description: "Empowered shippers on the go with a mobile-first application to quickly search for competitive rates and submit booking requests.",
     tags: ["B2B", "Mobile App", "Logistics", "0→1"],
-    keyOutcomes: [{ value: "0→1", label: "Strategic", subLabel: "ownership" }, { value: "40%↑", label: "Faster booking", subLabel: "time" }, { value: "5-Step", label: "Mobile-native", subLabel: "flow" }],
+    keyOutcomes: [{ value: "0→1", label: "Strategic", subLabel: "ownership" }, { value: "~40%↑", label: "Faster booking", subLabel: "projected vs desktop" }, { value: "5-Step", label: "Mobile-native", subLabel: "flow" }],
     sections: [
       {
         title: "Project Overview",
@@ -407,7 +407,7 @@ const projects: Project[] = [
         content: "Freight forwarders operate in fast-moving, high-stakes environments where access to accurate shipping rates and the ability to act on them immediately can determine whether a shipment is won or lost. This project involved designing a mobile application that translated a complex, desktop-bound workflow into a streamlined, decision-ready experience — enabling shippers to search rates, evaluate charges, and submit bookings entirely from their mobile devices.",
         metrics: [
           { value: "0→1", label: "Strategic", subLabel: "ownership" },
-          { value: "40%↑", label: "Faster booking", subLabel: "time" },
+          { value: "~40%↑", label: "Faster booking", subLabel: "projected vs desktop" },
           { value: "5-Step", label: "Mobile-native", subLabel: "flow" }
         ]
       },
