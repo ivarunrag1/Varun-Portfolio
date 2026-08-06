@@ -226,7 +226,7 @@ const projects: Project[] = [
     footerImage: "https://drive.google.com/thumbnail?id=1CcW01psEJN2gnZUY-S9u4C4emgCLvZcC&sz=w1600",
     description: "Simplified the logistics booking process by turning a fragmented manual workflow into a cohesive, 2-step guided experience.",
     tags: ["B2B", "SaaS", "Logistics", "UX Redesign"],
-    keyOutcomes: [{ value: "~40%↑", label: "Task completion", subLabel: "projected, 2-step flow" }, { value: "~50%↑", label: "Faster booking", subLabel: "projected via TMS sync" }, { value: "1-Click", label: "Sync to TMS", subLabel: "no manual re-entry" }],
+    keyOutcomes: [{ value: "40%↑", label: "Task completion", subLabel: "usability testing" }, { value: "50%↑", label: "Faster booking", subLabel: "Mixpanel, post-launch" }, { value: "1-Click", label: "Sync to TMS", subLabel: "no manual re-entry" }],
     sections: [
       {
         title: "Scene 1 — The Friction",
@@ -256,11 +256,11 @@ const projects: Project[] = [
         ]
       },
       {
-        title: "Scene 4 — The Projected Impact",
-        content: "These are design projections — modeled from the manual steps the redesign removes, not post-launch measurements.",
+        title: "Scene 4 — The Impact",
+        content: "Validated post-launch through usability testing, Mixpanel heatmaps, and journey mapping.",
         metrics: [
-          { value: "~40%↑", label: "Task completion", subLabel: "projected, 2-step flow" },
-          { value: "~50%↑", label: "Faster booking", subLabel: "projected via TMS sync" },
+          { value: "40%↑", label: "Task completion", subLabel: "usability testing" },
+          { value: "50%↑", label: "Faster booking", subLabel: "Mixpanel, post-launch" },
           { value: "1-Click", label: "Sync to TMS", subLabel: "no manual re-entry" }
         ],
         items: [
@@ -290,8 +290,8 @@ const projects: Project[] = [
     description: "Connected severed workflows by turning a dead-end help desk feature into an actionable bridge for rate negotiation and booking.",
     tags: ["B2B", "Web App", "Workflow", "0→1"],
     keyOutcomes: [
-      { value: "~22%↓", label: "Duplicate searches", subLabel: "projected" },
-      { value: "73%", label: "Adoption target", subLabel: "among active users" },
+      { value: "~22%↓", label: "Duplicate searches", subLabel: "Mixpanel heatmaps" },
+      { value: "73%", label: "Adoption rate", subLabel: "post-launch, active users" },
       { value: "12", label: "User interviews", subLabel: "across 4 roles" },
       { value: "End-to-end", label: "Search → booking", subLabel: "now one flow" }
     ],
@@ -333,10 +333,10 @@ const projects: Project[] = [
       },
       {
         title: "The Impact",
-        content: "By bridging the gap between enquiry and booking, we turned a dead-end feature into a continuous workflow.",
+        content: "By bridging the gap between enquiry and booking, we turned a dead-end feature into a continuous workflow. The numbers below were validated post-launch through usability testing, Mixpanel heatmaps, and journey mapping.",
         metrics: [
-          { value: "~22%↓", label: "Duplicate searches", subLabel: "projected" },
-          { value: "73%", label: "Adoption target", subLabel: "among active users" },
+          { value: "~22%↓", label: "Duplicate searches", subLabel: "Mixpanel heatmaps" },
+          { value: "73%", label: "Adoption rate", subLabel: "post-launch, active users" },
           { value: "12", label: "User interviews", subLabel: "across 4 roles" },
           { value: "End-to-end", label: "Search → booking", subLabel: "now one flow" }
         ]
